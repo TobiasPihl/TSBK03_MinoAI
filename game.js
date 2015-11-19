@@ -52,51 +52,24 @@ window.onload = function() {
 	game = new Phaser.Game(810, 610, Phaser.CANVAS, "");
 	game.state.add("PlayGame",playGame);
 	game.state.start("PlayGame");
-
-	//load sprite
-	//game.load.image('phaser', 'assets/sprites/phaser-dude.png');
 }
 
 var playGame = function(game){};
-
-
-//MAIN GAME LOOP
-function MainLoop() {
-
-}
 
 playGame.prototype = {
 
 	//CREATE FUNCTION
 	create: function(){
 
-	//Set up input controlls and actions
-		UP_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.UP).
-		onDown.add(	function() {
-			playerMovement(N);
-		}, this);
+		//Set up input controlls and actions
+		UP_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.UP);
+		DOWN_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+		LEFT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+		RIGHT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 		
-		DOWN_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.DOWN).
-		onDown.add(	function() {
-			playerMovement(S);
-		}, this);
+		//Initiate key input loop
+		inputCheckLoop();
 		
-		LEFT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.LEFT).
-		onDown.add(	function() {
-			playerMovement(W);
-		}, this);
-		
-		RIGHT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).
-		onDown.add(	function() {
-			playerMovement(E);
-		}, this);
-		
-		//Add graphics
-		//sprite = game.add.sprite(300, 300, 'phaser');
-
-		//Initialize game main loop
-		game.time.events.loop(Phaser.Timer.SECOND/60, MainLoop)
-
 		//draw the maze
 		mazeGraphics = game.add.graphics(0, 0);
 		drawMaze();      
@@ -109,16 +82,36 @@ playGame.prototype = {
 		easystar.setGrid(testLevel);
 		easystar.setAcceptableTiles([0]);
 		
+		//update the mino's pathfinding
 		updatePath(easystar);
 	}
 }
 
-//Move controls for player
-/*** Check the tile if it's one or zero, if 1, can't move there ***/
-function playerMovement(dir) {
-	
-	switch (dir) {
+//Key input loop
+function inputCheckLoop() {
+	game.time.events.loop(Phaser.Timer.SECOND/6, function(){
 		
+		if(UP_ARROW.isDown) {
+			playerMovement(N);
+		}
+		else if(DOWN_ARROW.isDown) {
+			playerMovement(S);
+		}
+		else if(RIGHT_ARROW.isDown) {
+			playerMovement(E);
+		}
+		else if(LEFT_ARROW.isDown) {
+			playerMovement(W);
+		}
+	})
+}
+
+//Move controls for player
+/** Check the tile if it's 1 or 0, 
+	if 1, can't move there, 
+	else update player position and redraw **/
+function playerMovement(dir) {
+	switch (dir) {
 		case N:
 			if(testLevel[playerYPos-1][playerXPos] == 0) {
 				eraseOldPlayerPos(playerXPos, playerYPos);
@@ -151,7 +144,7 @@ function playerMovement(dir) {
 }
 
 //Draw player, updating his position
-function drawPlayer() {
+function drawPlayer(xPos, yPox, xPosNew, yPoxNew) {
 	mazeGraphics.beginFill(0x25DD00);
 	mazeGraphics.drawRect(playerXPos * tileSize, playerYPos * tileSize, tileSize, tileSize);
 }
@@ -162,7 +155,6 @@ function eraseOldPlayerPos(xPos, yPos) {
 }
 
 function updatePath(easystar){
-
 	var i = 0;
 	game.time.events.loop(Phaser.Timer.SECOND*2, function(){
 		mazeGraphics.clear();
@@ -176,28 +168,25 @@ function updatePath(easystar){
 
 //Draw a path showing the calculated path to target location
 function drawPath(path){
-
 	var i = 0;
-	game.time.events.loop(0*Phaser.Timer.SECOND/10, function(){
-		if(i < path.length){
-			mazeGraphics.beginFill(0xFF0000);
+	while (i<path.length) {
+		mazeGraphics.beginFill(0xFF0000);
 			mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
 			i++;
 			mazeGraphics.endFill();
-		}
-	})
+	}
 }
 
 //Draw the maze based on the grid array
 function drawMaze(){
-     mazeGraphics.clear();
-     mazeGraphics.beginFill(0xFFFFFF);
-     for(i = 0; i < testLevelHeight; i ++){
-          for(j = 0; j < testLevelWidth; j ++){
-               if( testLevel[i][j] == 1){
-                    mazeGraphics.drawRect(j * tileSize, i * tileSize, tileSize, tileSize);
-               }
-          }
-     }
-     mazeGraphics.endFill();
+	mazeGraphics.clear();
+	mazeGraphics.beginFill(0xFFFFFF);
+	for(i = 0; i < testLevelHeight; i ++){
+		for(j = 0; j < testLevelWidth; j ++){
+			if( testLevel[i][j] == 1){
+				mazeGraphics.drawRect(j * tileSize, i * tileSize, tileSize, tileSize);
+			}
+		}
+	}
+	mazeGraphics.endFill();
 }
