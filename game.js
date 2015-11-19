@@ -102,7 +102,7 @@ playGame.prototype = {
 		drawMaze();      
 		
 		//Place the player initially
-		drawPlayer(playerXPos, playerYPos);
+		drawPlayer();
 
 		//Set easystar properties
 		var easystar = new EasyStar.js();
@@ -151,9 +151,9 @@ function playerMovement(dir) {
 }
 
 //Draw player, updating his position
-function drawPlayer(xPos, yPos) {
+function drawPlayer() {
 	mazeGraphics.beginFill(0x25DD00);
-	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
+	mazeGraphics.drawRect(playerXPos * tileSize, playerYPos * tileSize, tileSize, tileSize);
 }
 
 function eraseOldPlayerPos(xPos, yPos) {
@@ -165,8 +165,12 @@ function updatePath(easystar){
 
 	var i = 0;
 	game.time.events.loop(Phaser.Timer.SECOND*2, function(){
+		mazeGraphics.clear();
+		drawMaze();
+		drawPlayer();
 		easystar.findPath(1, 1, playerXPos, playerYPos, drawPath);
 		easystar.calculate();
+		
 	})
 }
 
