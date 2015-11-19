@@ -14,8 +14,8 @@ var testLevel =
 	[1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1],
 	[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1],
     [1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1],
-    [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
-    [1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1],
+    [1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1],
     [1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
     [1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1],
     [1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -41,6 +41,9 @@ var sprite;
 //Player
 var playerXPos = 3;
 var playerYPos = 1;
+
+var minoXPos = 18;
+var minoYPos = 18;
 
 //World
 var N = 0;
@@ -75,22 +78,22 @@ playGame.prototype = {
 		onDown.add(	function() {
 			playerMovement(N);
 		}, this);
-		
+
 		DOWN_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.DOWN).
 		onDown.add(	function() {
 			playerMovement(S);
 		}, this);
-		
+
 		LEFT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.LEFT).
 		onDown.add(	function() {
 			playerMovement(W);
 		}, this);
-		
+
 		RIGHT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).
 		onDown.add(	function() {
 			playerMovement(E);
 		}, this);
-		
+
 		//Add graphics
 		//sprite = game.add.sprite(300, 300, 'phaser');
 
@@ -99,16 +102,17 @@ playGame.prototype = {
 
 		//draw the maze
 		mazeGraphics = game.add.graphics(0, 0);
-		drawMaze();      
-		
+		drawMaze();
+
 		//Place the player initially
 		drawPlayer();
+    drawMino();
 
 		//Set easystar properties
 		var easystar = new EasyStar.js();
 		easystar.setGrid(testLevel);
 		easystar.setAcceptableTiles([0]);
-		
+
 		updatePath(easystar);
 	}
 }
@@ -116,9 +120,9 @@ playGame.prototype = {
 //Move controls for player
 /*** Check the tile if it's one or zero, if 1, can't move there ***/
 function playerMovement(dir) {
-	
+
 	switch (dir) {
-		
+
 		case N:
 			if(testLevel[playerYPos-1][playerXPos] == 0) {
 				eraseOldPlayerPos(playerXPos, playerYPos);
@@ -138,7 +142,7 @@ function playerMovement(dir) {
 				eraseOldPlayerPos(playerXPos, playerYPos);
 				playerYPos++;
 				drawPlayer(playerXPos, playerYPos);
-			}	
+			}
 		break;
 		case W:
 			if(testLevel[playerYPos][playerXPos-1] == 0) {
@@ -156,6 +160,12 @@ function drawPlayer() {
 	mazeGraphics.drawRect(playerXPos * tileSize, playerYPos * tileSize, tileSize, tileSize);
 }
 
+//Draw player, updating his position
+function drawMino() {
+	mazeGraphics.beginFill(0xFFFF00);
+	mazeGraphics.drawRect(minoXPos * tileSize, minoYPos * tileSize, tileSize, tileSize);
+}
+
 function eraseOldPlayerPos(xPos, yPos) {
 	mazeGraphics.beginFill(0x000000);
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
@@ -164,13 +174,14 @@ function eraseOldPlayerPos(xPos, yPos) {
 function updatePath(easystar){
 
 	var i = 0;
-	game.time.events.loop(Phaser.Timer.SECOND*2, function(){
+	game.time.events.loop(Phaser.Timer.SECOND, function(){
 		mazeGraphics.clear();
 		drawMaze();
 		drawPlayer();
-		easystar.findPath(1, 1, playerXPos, playerYPos, drawPath);
+    drawMino();
+		easystar.findPath(minoXPos, minoYPos, playerXPos, playerYPos, drawPath);
 		easystar.calculate();
-		
+
 	})
 }
 
@@ -178,13 +189,16 @@ function updatePath(easystar){
 function drawPath(path){
 
 	var i = 0;
-	game.time.events.loop(0*Phaser.Timer.SECOND/10, function(){
+	game.time.events.loop(0*Phaser.Timer.SECOND/60, function(){
 		if(i < path.length){
 			mazeGraphics.beginFill(0xFF0000);
 			mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
 			i++;
 			mazeGraphics.endFill();
 		}
+
+    minoXPos = path[1].x;
+    minoYPos = path[1].y;
 	})
 }
 
