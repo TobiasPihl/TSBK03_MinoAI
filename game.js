@@ -39,7 +39,7 @@ var RIGHT_ARROW;
 var sprite;
 
 //Player
-var playerXPos = 1;
+var playerXPos = 3;
 var playerYPos = 1;
 
 //World
@@ -91,18 +91,6 @@ playGame.prototype = {
 			playerMovement(E);
 		}, this);
 		
-		//Set up input controlls
-		UP_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.UP);
-		DOWN_ARROW 	= game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-		LEFT_ARROW 	= game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-		RIGHT_ARROW = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-
-		//Define on down actions
-		UP_ARROW.onDown.add(function(){ alert("Up") }, this);
-		DOWN_ARROW.onDown.add(function(){ alert("Down") }, this);
-		LEFT_ARROW.onDown.add(function(){ alert("Left") }, this);
-		RIGHT_ARROW.onDown.add(function(){ alert("Right") }, this);
-
 		//Add graphics
 		//sprite = game.add.sprite(300, 300, 'phaser');
 
@@ -120,8 +108,8 @@ playGame.prototype = {
 		var easystar = new EasyStar.js();
 		easystar.setGrid(testLevel);
 		easystar.setAcceptableTiles([0]);
-		easystar.findPath(1, 1, 5, 1, drawPath);
-		easystar.calculate();
+		
+		updatePath(easystar);
 	}
 }
 
@@ -173,11 +161,20 @@ function eraseOldPlayerPos(xPos, yPos) {
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 }
 
+function updatePath(easystar){
+
+	var i = 0;
+	game.time.events.loop(Phaser.Timer.SECOND*2, function(){
+		easystar.findPath(1, 1, playerXPos, playerYPos, drawPath);
+		easystar.calculate();
+	})
+}
+
 //Draw a path showing the calculated path to target location
 function drawPath(path){
 
 	var i = 0;
-	game.time.events.loop(Phaser.Timer.SECOND/10, function(){
+	game.time.events.loop(0*Phaser.Timer.SECOND/10, function(){
 		if(i < path.length){
 			mazeGraphics.beginFill(0xFF0000);
 			mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
