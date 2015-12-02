@@ -42,8 +42,13 @@ var sprite;
 var playerXPos = 3;
 var playerYPos = 1;
 
+//enemy
 var minoXPos = 18;
 var minoYPos = 18;
+
+//easystar path
+var globalPath = null;
+var pathStep = 0;
 
 //World
 var N = 0;
@@ -79,15 +84,21 @@ playGame.prototype = {
 
 		//Place the player initially
 		drawPlayer();
-    drawMino();
+		drawMino();
 
 		//Set easystar properties
 		var easystar = new EasyStar.js();
 		easystar.setGrid(testLevel);
 		easystar.setAcceptableTiles([0]);
 
-		//update the mino's pathfinding
+		//draw graphics and path initially
+		updateGraphics(easystar);
+		
+		//start loop which updates the mino's pathfinding
 		updatePath(easystar);
+		
+		//start loop which moves enemy Mino
+		moveMino();
 	}
 }
 
@@ -158,35 +169,53 @@ function drawMino() {
 	mazeGraphics.drawRect(minoXPos * tileSize, minoYPos * tileSize, tileSize, tileSize);
 }
 
+//when player moves, delete player icon from old position
 function eraseOldPlayerPos(xPos, yPos) {
 	mazeGraphics.beginFill(0x000000);
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 }
 
-function updatePath(easystar){
-	var i = 0;
-	game.time.events.loop(Phaser.Timer.SECOND/5, function(){
-		mazeGraphics.clear();
-		drawMaze();
-		drawPlayer();
-    drawMino();
-		easystar.findPath(minoXPos, minoYPos, playerXPos, playerYPos, drawPath);
-		easystar.calculate();
-
+//Move the mino enemy
+function moveMino() {
+	game.time.events.loop(Phaser.Timer.SECOND, function(){
+		
+		eraseOldPlayerPos(minoXPos,minoYPos);
+		pathStep++;
+		minoXPos = globalPath[pathStep].x;
+		minoYPos = globalPath[pathStep].y;
+		drawMino();
 	})
+}
+
+//Update the path which the monster is walking
+function updatePath(easystar){
+	game.time.events.loop(Phaser.Timer.SECOND*5, function(){
+		updateGraphics(easystar);
+	})
+}
+
+//update all visuals
+function updateGraphics(easystar) {
+	mazeGraphics.clear();
+	drawMaze();
+	easystar.findPath(minoXPos, minoYPos, playerXPos, playerYPos, drawPath);
+	easystar.calculate();
+	drawPlayer();
+	drawMino();
+	pathStep = 0;
 }
 
 //Draw a path showing the calculated path to target location
 function drawPath(path){
-	var i = 0;
-	while (i<path.length) {
+	
+	var i = 1;
+	while (i<path.length-1) {
 		mazeGraphics.beginFill(0xFF0000);
 		mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
 		i++;
 		mazeGraphics.endFill();
 	}
-	minoXPos = path[1].x;
-    minoYPos = path[1].y;
+	globalPath = path;
 }
 
 //Draw the maze based on the grid array
