@@ -39,7 +39,7 @@ var posX = 1;
 var posY = 1;
 
 window.onload = function() {
-	game = new Phaser.Game(810, 610, Phaser.CANVAS, "");
+	game = new Phaser.Game(mazeWidth*tileSize, mazeHeight*tileSize, Phaser.CANVAS, "");
 	game.state.add("PlayGame",playGame);
 	game.state.start("PlayGame");
 }
@@ -226,11 +226,16 @@ function eraseOldPlayerPos(xPos, yPos) {
 function moveMino() {
 	game.time.events.loop(Phaser.Timer.SECOND, function(){
 
-		eraseOldPlayerPos(minoXPos,minoYPos);
-		pathStep++;
-		minoXPos = globalPath[pathStep].x;
-		minoYPos = globalPath[pathStep].y;
-		drawMino();
+		try{
+			eraseOldPlayerPos(minoXPos,minoYPos);
+			pathStep++;
+			minoXPos = globalPath[pathStep].x;
+			minoYPos = globalPath[pathStep].y;
+			drawMino();
+		}
+		catch(err){
+			console.log("Some Error");
+		}		
 	})
 }
 
@@ -269,7 +274,7 @@ function drawPath(path){
 //Draw the maze based on the grid array
 function drawMaze(posX, posY){
 	mazeGraphics.clear();
-	mazeGraphics.beginFill(0xFFFFFF);
+	mazeGraphics.beginFill(0x968551);
 	for(i = 0; i < mazeHeight; i ++){
 		for(j = 0; j < mazeWidth; j ++){
 			if( maze[i][j] == 1){
