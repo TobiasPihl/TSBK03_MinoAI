@@ -1,17 +1,11 @@
+//Phaser game variable
 var game;
-
-//map properties
-var tileSize = 10;
-var mazeGraphics;
 
 //Input
 var UP_ARROW;
 var DOWN_ARROW;
 var LEFT_ARROW;
 var RIGHT_ARROW;
-
-//Graphics
-var sprite;
 
 //Player
 var playerXPos = 3;
@@ -21,9 +15,23 @@ var playerYPos = 1;
 var minoXPos = 18;
 var minoYPos = 18;
 
+//random destinationpoint
+var destinationX;
+var destinationY;
+
+//Enemy states
+var minoState;
+var stateSearching = 0;
+var stateChasing = 1;
+
+//map properties
+var tileSize = 10;
+
+//maze properties
 var maze = [];
 var mazeWidth = 60;
 var mazeHeight = 40;
+var mazeGraphics;
 
 //easystar path
 var globalPath = null;
@@ -39,9 +47,10 @@ var posX = 1;
 var posY = 1;
 
 window.onload = function() {
-	game = new Phaser.Game(mazeWidth*tileSize, mazeHeight*tileSize, Phaser.CANVAS, "");
+	game = new Phaser.Game(mazeWidth*tileSize, mazeHeight*tileSize, Phaser.auto, 'content');
 	game.state.add("PlayGame",playGame);
 	game.state.start("PlayGame");
+
 }
 
 var playGame = function(game){};
@@ -51,7 +60,7 @@ playGame.prototype = {
 	//CREATE FUNCTION
 	create: function(){
 
-	//Set up input controlls and actions
+		//Set up input controlls and actions
 		UP_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.UP);
 		DOWN_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 		LEFT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -61,72 +70,71 @@ playGame.prototype = {
 		inputCheckLoop();
 
 		//draw the maze
+		mazeGraphics = game.add.graphics(0, 0);
+		var moves = [];
+		var u = 0;
+		var v = Math.floor((Math.random() * 10) + 1);
+		for(var i = 0; i < mazeHeight; i ++){
+			maze[i] = [];
+			for(var j = 0; j < mazeWidth; j ++){
+				maze[i][j] = 1;
+				u ++;
 
-    mazeGraphics = game.add.graphics(0, 0);
-    var moves = [];
-    var u = 0;
-    var v = Math.floor((Math.random() * 10) + 1);
-    for(var i = 0; i < mazeHeight; i ++){
-         maze[i] = [];
-         for(var j = 0; j < mazeWidth; j ++){
-              maze[i][j] = 1;
-              u ++;
-
-              if(u == v){
-                maze[i][j] = 0;
-                v = Math.floor((Math.random() * 8) + 4);
-                u = 0;
-              }
-         }
-    }
-    maze[posX][posY] = 0;
-    moves.push(posY + posY * mazeWidth);
-    while(moves.length){
-         var possibleDirections = "";
-         if(posX+2 > 0 && posX + 2 < mazeHeight - 1 && maze[posX + 2][posY] == 1){
-              possibleDirections += "S";
-         }
-         if(posX-2 > 0 && posX - 2 < mazeHeight - 1 && maze[posX - 2][posY] == 1){
-              possibleDirections += "N";
-         }
-         if(posY-2 > 0 && posY - 2 < mazeWidth - 1 && maze[posX][posY - 2] == 1){
-              possibleDirections += "W";
-         }
-         if(posY+2 > 0 && posY + 2 < mazeWidth - 1 && maze[posX][posY + 2] == 1){
-              possibleDirections += "E";
-         }
-         if(possibleDirections){
-              var move = game.rnd.between(0, possibleDirections.length - 1);
-              switch (possibleDirections[move]){
-                   case "N":
-                        maze[posX - 2][posY] = 0;
-                        maze[posX - 1][posY] = 0;
-                        posX -= 2;
-                        break;
-                   case "S":
-                        maze[posX + 2][posY] = 0;
-                        maze[posX + 1][posY] = 0;
-                        posX += 2;
-                        break;
-                   case "W":
-                        maze[posX][posY - 2] = 0;
-                        maze[posX][posY - 1] = 0;
-                        posY -= 2;
-                        break;
-                   case "E":
-                        maze[posX][posY + 2]=0;
-                        maze[posX][posY + 1]=0;
-                        posY += 2;
-                        break;
-              }
-              moves.push(posY + posX * mazeWidth);
-         }
-         else{
-              var back = moves.pop();
-              posX = Math.floor(back / mazeWidth);
-              posY = back % mazeWidth;
-         }
-    }
+				if(u == v){
+					maze[i][j] = 0;
+					v = Math.floor((Math.random() * 8) + 4);
+					u = 0;
+				}
+			}
+		}
+		maze[posX][posY] = 0;
+		moves.push(posY + posY * mazeWidth);
+		while(moves.length){
+			var possibleDirections = "";
+			if(posX+2 > 0 && posX + 2 < mazeHeight - 1 && maze[posX + 2][posY] == 1){
+				possibleDirections += "S";
+			}
+			if(posX-2 > 0 && posX - 2 < mazeHeight - 1 && maze[posX - 2][posY] == 1){
+				possibleDirections += "N";
+			}
+			if(posY-2 > 0 && posY - 2 < mazeWidth - 1 && maze[posX][posY - 2] == 1){
+				possibleDirections += "W";
+			}
+			if(posY+2 > 0 && posY + 2 < mazeWidth - 1 && maze[posX][posY + 2] == 1){
+				possibleDirections += "E";
+			}
+			if(possibleDirections){
+				var move = game.rnd.between(0, possibleDirections.length - 1);
+				switch (possibleDirections[move]){
+					case "N":
+						maze[posX - 2][posY] = 0;
+						maze[posX - 1][posY] = 0;
+						posX -= 2;
+						break;
+					case "S":
+						maze[posX + 2][posY] = 0;
+						maze[posX + 1][posY] = 0;
+						posX += 2;
+						break;
+					case "W":
+						maze[posX][posY - 2] = 0;
+						maze[posX][posY - 1] = 0;
+						posY -= 2;
+						break;
+					case "E":
+						maze[posX][posY + 2]=0;
+						maze[posX][posY + 1]=0;
+						posY += 2;
+						break;
+				}
+				moves.push(posY + posX * mazeWidth);
+			}
+			else{
+				var back = moves.pop();
+				posX = Math.floor(back / mazeWidth);
+				posY = back % mazeWidth;
+			}
+		}
 		//mazeGraphics = game.add.graphics(0, 0);
 		//drawMaze(posX, posY);
 
@@ -134,13 +142,19 @@ playGame.prototype = {
 		drawPlayer();
 		drawMino();
 
+		//make sure enemy  position is walkable
+		//maze[minoXPos][minoYPos] = 1;
+
+		//set enemy state initially
+		minoState = stateChasing;//stateSearching;
+
 		//Set easystar properties
 		var easystar = new EasyStar.js();
 		easystar.setGrid(maze);
 		easystar.setAcceptableTiles([0]);
 
 		//draw graphics and path initially
-		updateGraphics(easystar);
+		calculatePath(easystar, playerXPos, playerYPos);
 
 		//start loop which updates the mino's pathfinding
 		updatePath(easystar);
@@ -227,7 +241,7 @@ function moveMino() {
 	game.time.events.loop(Phaser.Timer.SECOND, function(){
 
 		try{
-			eraseOldPlayerPos(minoXPos,minoYPos);
+			eraseOldPlayerPos(minoXPos,minoYPos); //erase enemy(same funtion)
 			pathStep++;
 			minoXPos = globalPath[pathStep].x;
 			minoYPos = globalPath[pathStep].y;
@@ -242,19 +256,41 @@ function moveMino() {
 //Update the path which the monster is walking
 function updatePath(easystar){
 	game.time.events.loop(Phaser.Timer.SECOND*5, function(){
-		updateGraphics(easystar,);
+
+		switch(minoState) {
+			case stateSearching:
+				getRandomPoint();
+				calculatePath(easystar, destinationX, destinationY);
+			break;
+			case stateChasing:
+				calculatePath(easystar, playerXPos, playerYPos);
+			break;
+		}
 	})
+}
+
+//Get random spot in labyrinth
+function getRandomPoint() {
+
+	destinationX = 0;
+	destinationY = 0;
+}
+
+//update all visuals
+function calculatePath(easystar, xPos, yPos) {
+	easystar.findPath(minoXPos, minoYPos, xPos, yPos, drawPath);
+	easystar.calculate();
+	pathStep = 0;
+
+	updateGraphics();
 }
 
 //update all visuals
 function updateGraphics(easystar) {
 	mazeGraphics.clear();
 	drawMaze();
-	easystar.findPath(minoXPos, minoYPos, playerXPos, playerYPos, drawPath);
-	easystar.calculate();
 	drawPlayer();
 	drawMino();
-	pathStep = 0;
 }
 
 //Draw a path showing the calculated path to target location
