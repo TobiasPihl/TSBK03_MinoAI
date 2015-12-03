@@ -159,7 +159,7 @@ playGame.prototype = {
 		//set initial random patrol point
 		getRandomPoint();
 		calculatePath(easystar, destinationX, destinationY);
-		
+
 		//draw graphics and path initially
 		//calculatePath(easystar, playerXPos, playerYPos);
 
@@ -250,9 +250,8 @@ function eraseOldPlayerPos(xPos, yPos) {
 //Move the mino enemy
 function moveMino() {
 	game.time.events.loop(Phaser.Timer.SECOND/15, function(){
-		
-		if( (minoXPos == destinationX && minoYPos == destinationY) ||
-				(minoXPos == playerXPos && minoYPos == playerYPos))
+
+		if( (minoXPos == destinationX && minoYPos == destinationY))
 			console.log("At destination")
 		else {
 			eraseOldPlayerPos(minoXPos,minoYPos); //erase enemy(same funtion)
@@ -261,8 +260,8 @@ function moveMino() {
 			minoYPos = globalPath[pathStep].y;
 			drawMino();
 		}
-			
-			
+
+
 		//FIX THIS BY  HANDLING DESTINATION ARRIVAL
 		// try{
 			// eraseOldPlayerPos(minoXPos,minoYPos); //erase enemy(same funtion)
@@ -285,16 +284,19 @@ function updatePath(easystar){
 		line = new Phaser.Line(minoXPos, minoYPos, playerXPos, playerYPos);
 
 		if(getLineOfSight(line)){
-			console.log("Sant");
 		}
 
 		switch(minoState) {
 			case stateSearching:
+				console.log("Searching");
 				getRandomPoint();
 				calculatePath(easystar, destinationX, destinationY);
 			break;
 			case stateChasing:
-				calculatePath(easystar, playerXPos, playerYPos);
+				console.log("Chasing");
+				destinationX = playerXPos;
+				destinationY = playerYPos;
+				calculatePath(easystar, destinationX, destinationY);
 			break;
 		}
 	});
@@ -340,7 +342,6 @@ function getLineOfSight(line){
 		//change state
 		console.log(Math.floor(line.length));
 		if(Math.floor(line.length) < 15){
-			console.log("Inne");
 			minoState = stateChasing;
 			return true;
 		}
