@@ -46,6 +46,9 @@ var W = 3;
 var posX = 1;
 var posY = 1;
 
+var line;
+var tileHits = [];
+
 window.onload = function() {
 	game = new Phaser.Game(mazeWidth*tileSize, mazeHeight*tileSize, Phaser.auto, 'content');
 	game.state.add("PlayGame",playGame);
@@ -146,7 +149,7 @@ playGame.prototype = {
 		//maze[minoXPos][minoYPos] = 1;
 
 		//set enemy state initially
-		minoState = stateSearching;
+		minoState = stateSearching;//stateSearching;
 
 		//Set easystar properties
 		var easystar = new EasyStar.js();
@@ -165,6 +168,10 @@ playGame.prototype = {
 
 		//start loop which moves enemy Mino
 		moveMino();
+
+		//Create line
+
+		//var intersect = this.get
 	}
 }
 
@@ -272,8 +279,14 @@ function moveMino() {
 
 //Update the path which the monster is walking
 function updatePath(easystar){
-	
+
 	game.time.events.loop(Phaser.Timer.SECOND*5, function(){
+
+		line = new Phaser.Line(minoXPos, minoYPos, playerXPos, playerYPos);
+
+		if(getLineOfSight(line)){
+			console.log("Sant");
+		}
 
 		switch(minoState) {
 			case stateSearching:
@@ -292,32 +305,48 @@ function getRandomPoint() {
 
 	var xRand;
 	var yRand;
-	
+
 	//keep trying until random point is walkable
 	do {
 		xRand = Math.floor(Math.random() * (mazeWidth-2)) + 1;
 		yRand = Math.floor(Math.random() * (mazeHeight-2)) + 1;
-		
+
 		// console.log("Randomized: " + xRand + ", " + yRand);
 		// console.log("rPoint has property: " + maze[xRand][yRand]);
 	} while (!validatePoint(yRand, xRand));
-	
+
 	destinationX = xRand;
 	destinationY = yRand;
 }
 
 //validate a given random point by checking if it's walkable
 function validatePoint(xPos, yPos) {
-	
+
 	//TODO: INSTEAD CHECK IF THERE IS A PATH TO THE RAND POINT
 	if( maze[xPos+1][yPos] == 1 &&
 			maze[xPos-1][yPos] == 1 &&
 			maze[xPos][yPos+1] == 1 &&
 			maze[xPos][yPos-1] == 1 )
 		return false;
-	
-	//returns false if point not walkable 
+
+	//returns false if point not walkable
 	return (maze[xPos][yPos] == 0);
+}
+
+function getLineOfSight(line){
+
+		//var intersect = line.intersects(maze, true);
+		//If the lenght between player and mino is smaller than line.lenght
+		//change state
+		console.log(Math.floor(line.length));
+		if(Math.floor(line.length) < 15){
+			console.log("Inne");
+			minoState = stateChasing;
+			return true;
+		}
+		else {
+			minoState = stateSearching;
+		}
 }
 
 //update all visuals
