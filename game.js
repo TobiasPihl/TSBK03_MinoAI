@@ -50,7 +50,7 @@ window.onload = function() {
 	game = new Phaser.Game(mazeWidth*tileSize, mazeHeight*tileSize, Phaser.auto, 'content');
 	game.state.add("PlayGame",playGame);
 	game.state.start("PlayGame");
-	
+
 }
 
 var playGame = function(game){};
@@ -141,10 +141,10 @@ playGame.prototype = {
 		//Place the player initially
 		drawPlayer();
 		drawMino();
-		
+
 		//make sure enemy  position is walkable
 		//maze[minoXPos][minoYPos] = 1;
-		
+
 		//set enemy state initially
 		minoState = stateSearching;
 
@@ -258,7 +258,7 @@ function moveMino() {
 function updatePath(easystar){
 	
 	game.time.events.loop(Phaser.Timer.SECOND*5, function(){
-		
+
 		switch(minoState) {
 			case stateSearching:
 				getRandomPoint();
@@ -273,7 +273,7 @@ function updatePath(easystar){
 
 //Get random spot in labyrinth
 function getRandomPoint() {
-	
+
 	var xRand;
 	var yRand;
 	
@@ -309,7 +309,7 @@ function calculatePath(easystar, xPos, yPos) {
 	easystar.findPath(minoXPos, minoYPos, xPos, yPos, drawPath);
 	easystar.calculate();
 	pathStep = 0;
-	
+
 	updateGraphics();
 }
 
