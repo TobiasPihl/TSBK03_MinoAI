@@ -153,8 +153,12 @@ playGame.prototype = {
 		easystar.setGrid(maze);
 		easystar.setAcceptableTiles([0]);
 
+		//set initial random patrol point
+		getRandomPoint();
+		calculatePath(easystar, destinationX, destinationY);
+		
 		//draw graphics and path initially
-		calculatePath(easystar, playerXPos, playerYPos);
+		//calculatePath(easystar, playerXPos, playerYPos);
 
 		//start loop which updates the mino's pathfinding
 		updatePath(easystar);
@@ -238,19 +242,31 @@ function eraseOldPlayerPos(xPos, yPos) {
 }
 //Move the mino enemy
 function moveMino() {
-	game.time.events.loop(Phaser.Timer.SECOND/4, function(){
-
-		//FIX THIS BY  HANDLING DESTINATION ARRIVAL
-		try{
+	game.time.events.loop(Phaser.Timer.SECOND/15, function(){
+		
+		if( (minoXPos == destinationX && minoYPos == destinationY) ||
+				(minoXPos == playerXPos && minoYPos == playerYPos))
+			console.log("At destination")
+		else {
 			eraseOldPlayerPos(minoXPos,minoYPos); //erase enemy(same funtion)
 			pathStep++;
 			minoXPos = globalPath[pathStep].x;
 			minoYPos = globalPath[pathStep].y;
 			drawMino();
 		}
-		catch(err){
-			console.log("Some Error");
-		}
+			
+			
+		//FIX THIS BY  HANDLING DESTINATION ARRIVAL
+		// try{
+			// eraseOldPlayerPos(minoXPos,minoYPos); //erase enemy(same funtion)
+			// pathStep++;
+			// minoXPos = globalPath[pathStep].x;
+			// minoYPos = globalPath[pathStep].y;
+			// drawMino();
+		// }
+		// catch(err){
+			// console.log("Some Error");
+		// }
 	});
 }
 
