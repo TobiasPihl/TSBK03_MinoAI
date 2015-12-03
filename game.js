@@ -235,14 +235,14 @@ function moveMino() {
 		}
 		catch(err){
 			console.log("Some Error");
-		}		
+		}
 	})
 }
 
 //Update the path which the monster is walking
 function updatePath(easystar){
 	game.time.events.loop(Phaser.Timer.SECOND*5, function(){
-		updateGraphics(easystar);
+		updateGraphics(easystar,);
 	})
 }
 
