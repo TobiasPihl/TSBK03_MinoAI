@@ -46,6 +46,9 @@ var W = 3;
 var posX = 1;
 var posY = 1;
 
+var line;
+var tileHits = [];
+
 window.onload = function() {
 	game = new Phaser.Game(mazeWidth*tileSize, mazeHeight*tileSize, Phaser.auto, 'content');
 	game.state.add("PlayGame",playGame);
@@ -146,7 +149,7 @@ playGame.prototype = {
 		//maze[minoXPos][minoYPos] = 1;
 
 		//set enemy state initially
-		minoState = stateChasing;//stateSearching;
+		minoState = stateSearching;//stateSearching;
 
 		//Set easystar properties
 		var easystar = new EasyStar.js();
@@ -161,6 +164,10 @@ playGame.prototype = {
 
 		//start loop which moves enemy Mino
 		moveMino();
+
+		//Create line
+
+		//var intersect = this.get
 	}
 }
 
@@ -257,6 +264,12 @@ function moveMino() {
 function updatePath(easystar){
 	game.time.events.loop(Phaser.Timer.SECOND*5, function(){
 
+		line = new Phaser.Line(minoXPos, minoYPos, playerXPos, playerYPos);
+
+		if(getLineOfSight(line)){
+			console.log("Sant");
+		}
+
 		switch(minoState) {
 			case stateSearching:
 				getRandomPoint();
@@ -274,6 +287,20 @@ function getRandomPoint() {
 
 	destinationX = 0;
 	destinationY = 0;
+}
+
+function getLineOfSight(line){
+
+		//var intersect = line.intersects(maze, true);
+		console.log(Math.floor(line.length));
+		if(Math.floor(line.length) < 10){
+			console.log("Inne");
+			minoState = stateChasing;
+			return true;
+		}
+		else {
+			minoState = stateSearching;
+		}
 }
 
 //update all visuals
