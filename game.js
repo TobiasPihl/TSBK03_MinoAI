@@ -14,16 +14,6 @@ var minoState;
 var stateSearching = 0;
 var stateChasing = 1;
 
-//map properties
-var tileSize = 10;
-
-//maze properties
-var maze = [];
-var mazeWidth = 60;
-var mazeHeight = 40;
-
-//var mazeGraphics;
-
 //easystar path
 var globalPath = null;
 var pathStep = 0;
@@ -44,7 +34,6 @@ window.onload = function() {
 	game = new Phaser.Game(mazeWidth*tileSize, mazeHeight*tileSize, Phaser.auto, 'content');
 	game.state.add("PlayGame",playGame);
 	game.state.start("PlayGame");
-
 }
 
 var playGame = function(game){};
@@ -53,7 +42,17 @@ playGame.prototype = {
 
 	//CREATE FUNCTION
 	create: function(){
-
+	
+		//TEST ***
+		console.log("Got: " + person.getX());
+		person.setX(5);
+		console.log("Got: " + person.getX());
+		person.printRand("Test");
+		//TEST ***
+	
+		//Init drawGraphics scripts
+		//var graphicsDrawer = new drawGraphics.js();
+		
 		//Initiate player input controllers
 		playerInputInit();
 		
@@ -63,6 +62,7 @@ playGame.prototype = {
 		//draw the maze
 		var Maze = new maze.js();
 		maze = createMaze(maze, mazeWidth, mazeHeight);
+		
 		//mazeGraphics = game.add.graphics(0, 0);
 		//drawMaze(posX, posY);
 
@@ -106,7 +106,7 @@ function moveMino() {
 	game.time.events.loop(Phaser.Timer.SECOND/15, function(){
 
 		if( (minoXPos == destinationX && minoYPos == destinationY))
-			console.log("At destination")
+			console.log("At destination");
 		else {
 			eraseOldPlayerPos(minoXPos,minoYPos); //erase enemy(same funtion)
 			pathStep++;
@@ -129,12 +129,12 @@ function updatePath(easystar){
 
 		switch(minoState) {
 			case stateSearching:
-				console.log("Searching");
+				//console.log("Searching");
 				getRandomPoint();
 				calculatePath(easystar, destinationX, destinationY);
 			break;
 			case stateChasing:
-				console.log("Chasing");
+				//console.log("Chasing");
 				destinationX = playerXPos;
 				destinationY = playerYPos;
 				calculatePath(easystar, destinationX, destinationY);
@@ -181,7 +181,7 @@ function getLineOfSight(line){
 		//var intersect = line.intersects(maze, true);
 		//If the lenght between player and mino is smaller than line.lenght
 		//change state
-		console.log(Math.floor(line.length));
+		//console.log(Math.floor(line.length));
 		if(Math.floor(line.length) < 15){
 			minoState = stateChasing;
 			return true;
