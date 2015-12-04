@@ -21,8 +21,8 @@ var mino = [];
 
 //maze properties
 var maze = [];
-var mazeWidth = 60;
-var mazeHeight = 40;
+var mazeWidth = 80;
+var mazeHeight = 60;
 
 //var mazeGraphics;
 

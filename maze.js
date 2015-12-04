@@ -23,7 +23,10 @@ maze.js = function(){
             maze[i][j] = 1;
             counter ++;
             if(counter == randomVal){
-              maze[i][j] = 0;
+              //Check so that we dont destroy a wall at the edge
+              if(i > 2 && j > 2){
+                  maze[i - 1][j - 1] = 0;
+              }
               randomVal = Math.floor((Math.random() * 8) + 4);
               counter = 0;
             }
