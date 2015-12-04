@@ -61,71 +61,8 @@ playGame.prototype = {
 		inputCheckLoop();
 
 		//draw the maze
-		mazeGraphics = game.add.graphics(0, 0);
-		var moves = [];
-		var u = 0;
-		var v = Math.floor((Math.random() * 10) + 1);
-		for(var i = 0; i < mazeHeight; i ++){
-			maze[i] = [];
-			for(var j = 0; j < mazeWidth; j ++){
-				maze[i][j] = 1;
-				u ++;
-
-				if(u == v){
-					maze[i][j] = 0;
-					v = Math.floor((Math.random() * 8) + 4);
-					u = 0;
-				}
-			}
-		}
-		maze[posX][posY] = 0;
-		moves.push(posY + posY * mazeWidth);
-		while(moves.length){
-			var possibleDirections = "";
-			if(posX+2 > 0 && posX + 2 < mazeHeight - 1 && maze[posX + 2][posY] == 1){
-				possibleDirections += "S";
-			}
-			if(posX-2 > 0 && posX - 2 < mazeHeight - 1 && maze[posX - 2][posY] == 1){
-				possibleDirections += "N";
-			}
-			if(posY-2 > 0 && posY - 2 < mazeWidth - 1 && maze[posX][posY - 2] == 1){
-				possibleDirections += "W";
-			}
-			if(posY+2 > 0 && posY + 2 < mazeWidth - 1 && maze[posX][posY + 2] == 1){
-				possibleDirections += "E";
-			}
-			if(possibleDirections){
-				var move = game.rnd.between(0, possibleDirections.length - 1);
-				switch (possibleDirections[move]){
-					case "N":
-						maze[posX - 2][posY] = 0;
-						maze[posX - 1][posY] = 0;
-						posX -= 2;
-						break;
-					case "S":
-						maze[posX + 2][posY] = 0;
-						maze[posX + 1][posY] = 0;
-						posX += 2;
-						break;
-					case "W":
-						maze[posX][posY - 2] = 0;
-						maze[posX][posY - 1] = 0;
-						posY -= 2;
-						break;
-					case "E":
-						maze[posX][posY + 2]=0;
-						maze[posX][posY + 1]=0;
-						posY += 2;
-						break;
-				}
-				moves.push(posY + posX * mazeWidth);
-			}
-			else{
-				var back = moves.pop();
-				posX = Math.floor(back / mazeWidth);
-				posY = back % mazeWidth;
-			}
-		}
+		var Maze = new maze.js();
+		maze = createMaze(maze, mazeWidth, mazeHeight);
 		//mazeGraphics = game.add.graphics(0, 0);
 		//drawMaze(posX, posY);
 
