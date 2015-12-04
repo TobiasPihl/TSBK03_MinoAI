@@ -55,10 +55,11 @@ playGame.prototype = {
 	//CREATE FUNCTION
 	create: function(){
 		
-		maze = createMaze(maze, mazeWidth, mazeHeight);
-		
 		//set Player position
 		player.setPosition(5, 5);
+	
+		//NO NEED TO DO THIS, FIX
+		maze = Maze.createMaze(maze, mazeWidth, mazeHeight);
 		
 		//set enemy state initially
 		minoState = stateSearching;//stateSearching;
@@ -69,14 +70,14 @@ playGame.prototype = {
 		easystar.setAcceptableTiles([0]);
 
 		//set initial random patrol point
-		getRandomPoint();
-		calculatePath(easystar, destinationX, destinationY);
+		Mino.getRandomPoint();
+		Mino.calculatePath(easystar, destinationX, destinationY);
 
 		//start loop which updates the mino's pathfinding
-		updateMinoPath(easystar);
+		Mino.updateMinoPath(easystar);
 
 		//start loop which moves enemy Mino
-		moveMino();
+		Mino.moveMino();
 
 		//var intersect = this.get
 		
