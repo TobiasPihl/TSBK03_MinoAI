@@ -1,16 +1,6 @@
 //Phaser game variable
 var game;
 
-//Input
-var UP_ARROW;
-var DOWN_ARROW;
-var LEFT_ARROW;
-var RIGHT_ARROW;
-
-//Player
-var playerXPos = 3;
-var playerYPos = 1;
-
 //enemy
 var minoXPos = 18;
 var minoYPos = 18;
@@ -63,12 +53,9 @@ playGame.prototype = {
 	//CREATE FUNCTION
 	create: function(){
 
-		//Set up input controlls and actions
-		UP_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.UP);
-		DOWN_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-		LEFT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-		RIGHT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-
+		//Initiate player input controllers
+		playerInputInit();
+		
 		//Initiate key input loop
 		inputCheckLoop();
 
@@ -112,61 +99,6 @@ playGame.prototype = {
 	}
 }
 
-//Key input loop
-function inputCheckLoop() {
-	game.time.events.loop(Phaser.Timer.SECOND/6, function(){
-		if(UP_ARROW.isDown) {
-			playerMovement(N);
-		}
-		else if(DOWN_ARROW.isDown) {
-			playerMovement(S);
-		}
-		else if(RIGHT_ARROW.isDown) {
-			playerMovement(E);
-		}
-		else if(LEFT_ARROW.isDown) {
-			playerMovement(W);
-		}
-	})
-}
-
-//Move controls for player
-/** Check the tile if it's 1 or 0,
-	if 1, can't move there,
-	else update player position and redraw **/
-function playerMovement(dir) {
-	switch (dir) {
-		case N:
-			if(maze[playerYPos-1][playerXPos] == 0) {
-				eraseOldPlayerPos(playerXPos, playerYPos);
-				playerYPos--;
-				drawPlayer(playerXPos, playerYPos);
-			}
-		break;
-		case E:
-			if(maze[playerYPos][playerXPos+1] == 0) {
-				eraseOldPlayerPos(playerXPos, playerYPos);
-				playerXPos++;
-				drawPlayer(playerXPos, playerYPos);
-			}
-		break;
-		case S:
-			if(maze[playerYPos+1][playerXPos] == 0) {
-				eraseOldPlayerPos(playerXPos, playerYPos);
-				playerYPos++;
-				drawPlayer(playerXPos, playerYPos);
-			}
-		break;
-		case W:
-			if(maze[playerYPos][playerXPos-1] == 0) {
-				eraseOldPlayerPos(playerXPos, playerYPos);
-				playerXPos--;
-				drawPlayer(playerXPos, playerYPos);
-			}
-		break;
-	}
-}
-
 //Draw player, updating his position
 function drawPlayer(xPos, yPox, xPosNew, yPoxNew) {
 	mazeGraphics.beginFill(0x25DD00);
@@ -197,19 +129,6 @@ function moveMino() {
 			minoYPos = globalPath[pathStep].y;
 			drawMino();
 		}
-
-
-		//FIX THIS BY  HANDLING DESTINATION ARRIVAL
-		// try{
-			// eraseOldPlayerPos(minoXPos,minoYPos); //erase enemy(same funtion)
-			// pathStep++;
-			// minoXPos = globalPath[pathStep].x;
-			// minoYPos = globalPath[pathStep].y;
-			// drawMino();
-		// }
-		// catch(err){
-			// console.log("Some Error");
-		// }
 	});
 }
 
