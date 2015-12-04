@@ -3,10 +3,10 @@ var maze = [];
 var mazeWidth = 60;
 var mazeHeight = 40;
 
-maze.js = function(){
+//maze.js = function(){
 
     //Create a maze by using the input varables of the maze's dimension
-    createMaze = function(maze, mazeWidth, mazeHeight){
+    function createMaze(maze, mazeWidth, mazeHeight){
 
         //Create a mutltidimensional array of ones
         //ones = wall
@@ -24,16 +24,20 @@ maze.js = function(){
         var posY = 1;
 
         for(var i = 0; i < mazeHeight; i ++){
-			maze[i] = [];
-			for(var j = 0; j < mazeWidth; j ++){
-				maze[i][j] = 1;
-				counter ++;
-				if(counter == randomVal){
-					maze[i][j] = 0;
-					randomVal = Math.floor((Math.random() * 8) + 4);
-					counter = 0;
-				}
-			}
+
+          maze[i] = [];
+          for(var j = 0; j < mazeWidth; j ++){
+            maze[i][j] = 1;
+            counter ++;
+            if(counter == randomVal){
+              //Check so that we dont destroy a wall at the edge
+              if(i > 2 && j > 2){
+                  maze[i - 1][j - 1] = 0;
+              }
+              randomVal = Math.floor((Math.random() * 8) + 4);
+              counter = 0;
+            }
+          }
         }
 
         //Creat an walkable path through the maze
@@ -88,4 +92,4 @@ maze.js = function(){
         }
         return maze;
 	}
-}
+//}
