@@ -55,8 +55,6 @@ playGame.prototype = {
 	//CREATE FUNCTION
 	create: function(){
 
-
-		//var Mino = new mino.js();
 		//Initiate player input controllers
 		playerInputInit();
 
@@ -68,15 +66,10 @@ playGame.prototype = {
 		maze = createMaze(maze, mazeWidth, mazeHeight);
 
 		var Mino = new mino.js();
-		//mazeGraphics = game.add.graphics(0, 0);
-		//drawMaze(posX, posY);
 
 		//Place the player initially
 		drawPlayer();
 		drawMino();
-
-		//make sure enemy  position is walkable
-		//maze[minoXPos][minoYPos] = 1;
 
 		//set enemy state initially
 		minoState = stateSearching;//stateSearching;
@@ -89,9 +82,6 @@ playGame.prototype = {
 		//set initial random patrol point
 		getRandomPoint();
 		calculatePath(easystar, destinationX, destinationY);
-
-		//draw graphics and path initially
-		//calculatePath(easystar, playerXPos, playerYPos);
 
 		//start loop which updates the mino's pathfinding
 		updateMinoPath(easystar);
