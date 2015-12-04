@@ -7,9 +7,10 @@ var mazeGraphics;
 //drawGraphics.js = function(){
 
 	//Draw player, updating his position
-	function drawPlayer(xPos, yPox, xPosNew, yPoxNew) {
+	function drawPlayer(xPos, yPos) {
+		console.log("drawing player at:" + xPos + ", " + yPos);
 		mazeGraphics.beginFill(0x25DD00);
-		mazeGraphics.drawRect(playerXPos * tileSize, playerYPos * tileSize, tileSize, tileSize);
+		mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 	}
 
 	//Draw player, updating his position

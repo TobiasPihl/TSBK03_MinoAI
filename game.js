@@ -1,3 +1,10 @@
+
+//TO BE REMOVED ______
+var playerXPos = 10;
+var playerYPos = 10;
+
+//____________________
+
 //Phaser game variable
 var game;
 
@@ -47,35 +54,12 @@ playGame.prototype = {
 
 	//CREATE FUNCTION
 	create: function(){
-	
-		//TEST ***
-		console.log("Got: " + person.getX());
-		person.setX(5);
-		console.log("Got: " + person.getX());
-		person.printRand("Test");
-		//TEST ***
-	
-		//Init drawGraphics scripts
-		//var graphicsDrawer = new drawGraphics.js();
-		
-		//Initiate player input controllers
-		playerInputInit();
-
-		//Initiate key input loop
-		inputCheckLoop();
-
-		//draw the maze
-		//var Maze = new maze.js();
 		
 		maze = createMaze(maze, mazeWidth, mazeHeight);
-
-
-		//var Mino = new mino.js();
-
-		//Place the player initially
-		drawPlayer();
-		drawMino();
-
+		
+		//set Player position
+		player.setPosition(5, 5);
+		
 		//set enemy state initially
 		minoState = stateSearching;//stateSearching;
 
@@ -95,6 +79,15 @@ playGame.prototype = {
 		moveMino();
 
 		//var intersect = this.get
+		
+		//set controllers
+		UP_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.UP);
+		DOWN_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+		LEFT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+		RIGHT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+		
+		//Initiate key input loop
+		inputCheckLoop();
 	}
 }
 
@@ -102,6 +95,24 @@ playGame.prototype = {
 function updateGraphics(easystar) {
 	mazeGraphics.clear();
 	drawMaze();
-	drawPlayer();
+	drawPlayer(player.getX(), player.getY());
 	drawMino();
+}
+
+//Key input loop
+function inputCheckLoop() {
+	game.time.events.loop(Phaser.Timer.SECOND/10, function(){
+		if(UP_ARROW.isDown) {
+			player.playerMovement(N);
+		}
+		else if(DOWN_ARROW.isDown) {
+			player.playerMovement(S);
+		}
+		else if(RIGHT_ARROW.isDown) {
+			player.playerMovement(E);
+		}
+		else if(LEFT_ARROW.isDown) {
+			player.playerMovement(W);
+		}
+	})
 }
