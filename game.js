@@ -47,17 +47,17 @@ playGame.prototype = {
 
 	//CREATE FUNCTION
 	create: function(){
-	
+
 		//TEST ***
 		console.log("Got: " + person.getX());
 		person.setX(5);
 		console.log("Got: " + person.getX());
 		person.printRand("Test");
 		//TEST ***
-	
+
 		//Init drawGraphics scripts
 		//var graphicsDrawer = new drawGraphics.js();
-		
+
 		//Initiate player input controllers
 		playerInputInit();
 
@@ -66,8 +66,8 @@ playGame.prototype = {
 
 		//draw the maze
 		//var Maze = new maze.js();
-		
-		maze = createMaze(maze, mazeWidth, mazeHeight);
+
+		maze = Maze.createMaze(maze, mazeWidth, mazeHeight);
 
 
 		//var Mino = new mino.js();
@@ -85,14 +85,14 @@ playGame.prototype = {
 		easystar.setAcceptableTiles([0]);
 
 		//set initial random patrol point
-		getRandomPoint();
-		calculatePath(easystar, destinationX, destinationY);
+		Mino.getRandomPoint();
+		Mino.calculatePath(easystar, destinationX, destinationY);
 
 		//start loop which updates the mino's pathfinding
-		updateMinoPath(easystar);
+		Mino.updateMinoPath(easystar);
 
 		//start loop which moves enemy Mino
-		moveMino();
+		Mino.moveMino();
 
 		//var intersect = this.get
 	}
