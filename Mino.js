@@ -8,20 +8,20 @@ var Mino = (function(){
 
 						line = new Phaser.Line(minoXPos, minoYPos, playerXPos, playerYPos);
 
-						if(getLineOfSight(line)){
+						if(Mino.getLineOfSight(line)){
 						}
 
 						switch(minoState) {
 							case stateSearching:
 								console.log("Searching");
-								getRandomPoint();
-								calculatePath(easystar, destinationX, destinationY);
+								Mino.getRandomPoint();
+								Mino.calculatePath(easystar, destinationX, destinationY);
 							break;
 							case stateChasing:
 								console.log("Chasing");
 								destinationX = playerXPos;
 								destinationY = playerYPos;
-								calculatePath(easystar, destinationX, destinationY);
+								Mino.calculatePath(easystar, destinationX, destinationY);
 							break;
 						}
 					});
