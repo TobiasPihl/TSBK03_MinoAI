@@ -1,22 +1,11 @@
 
 //TO BE REMOVED ______
-var playerXPos = 10;
-var playerYPos = 10;
-
-
-//enemy
-var minoXPos = 18;
-var minoYPos = 18;
-
-//Enemy states
-var minoState;
-var stateSearching = 0;
-var stateChasing = 1;
 
 //maze properties
 var maze = [];
 var mazeWidth = 40;
 var mazeHeight = 40;
+
 //____________________
 
 var mazeGraphics;
@@ -25,25 +14,17 @@ var tileSize = 10;
 //Phaser game variable
 var game;
 
-//random destinationpoint
-var destinationX;
-var destinationY;
-
 //easystar path
 var globalPath = null;
 var pathStep = 0;
 
 //World
-var N = 0;
-var E = 1;
-var S = 2;
-var W = 3;
-
-var posX = 1;
-var posY = 1;
-
-var line;
-var tileHits = [];
+var Direction = {
+	NORTH : 0,
+	EAST  : 1,
+	SOUTH : 2,
+	WEST  : 3,
+};
 
 window.onload = function() {
 	game = new Phaser.Game(mazeWidth * tileSize, 
@@ -66,9 +47,6 @@ playGame.prototype = {
 		//NO NEED TO DO THIS, FIX
 		maze = Maze.createMaze(maze, mazeWidth, mazeHeight);
 		
-		//set enemy state initially
-		minoState = stateSearching;//stateSearching;
-
 		//Set easystar properties
 		var easystar = new EasyStar.js();
 		easystar.setGrid(maze);
@@ -76,7 +54,7 @@ playGame.prototype = {
 
 		//set initial random patrol point
 		Mino.getRandomPoint();
-		Mino.calculatePath(easystar, destinationX, destinationY);
+		Mino.calculatePath(easystar /*, destinationX, destinationY*/);
 
 		//start loop which updates the mino's pathfinding
 		Mino.updateMinoPath(easystar);
@@ -101,27 +79,25 @@ playGame.prototype = {
 function updateGraphics(easystar) {
 	
 	mazeGraphics.clear();
-	//drawGraphics.clearGraphics();
-	
 	drawMaze();
-	drawPlayer(player.getX(), player.getY());
-	drawMino();
+	drawUnit("Player", player.getX(), player.getY());
+	drawUnit("Mino", Mino.getX(), Mino.getY());
 }
 
 //Key input loop
 function inputCheckLoop() {
 	game.time.events.loop(Phaser.Timer.SECOND/10, function(){
 		if(UP_ARROW.isDown) {
-			player.playerMovement(N);
+			player.playerMovement(Direction.NORTH);
 		}
 		else if(DOWN_ARROW.isDown) {
-			player.playerMovement(S);
+			player.playerMovement(Direction.SOUTH);
 		}
 		else if(RIGHT_ARROW.isDown) {
-			player.playerMovement(E);
+			player.playerMovement(Direction.EAST);
 		}
 		else if(LEFT_ARROW.isDown) {
-			player.playerMovement(W);
+			player.playerMovement(Direction.WEST);
 		}
 	})
 }

@@ -19,32 +19,32 @@ var player = (function() {
 		//Moves player in a direction if there is  not wall there
 		playerMovement: function(dir) {
 			switch (dir) {
-				case N:
+				case Direction.NORTH:
 					if(maze[yPosition-1][xPosition] == 0) {
-						eraseOldPlayerPos(xPosition, yPosition);
+						eraseOldPos(xPosition, yPosition);
 						yPosition--;
-						drawPlayer(xPosition, yPosition);
+						drawUnit("Player", xPosition, yPosition);
 					}
 				break;
-				case E:
+				case Direction.EAST:
 					if(maze[yPosition][xPosition+1] == 0) {
-						eraseOldPlayerPos(xPosition, yPosition);
+						eraseOldPos(xPosition, yPosition);
 						xPosition++;
-						drawPlayer(xPosition, yPosition);
+						drawUnit("Player", xPosition, yPosition);
 					}
 				break;
-				case S:
+				case Direction.SOUTH:
 					if(maze[yPosition+1][xPosition] == 0) {
-						eraseOldPlayerPos(xPosition, yPosition);
+						eraseOldPos(xPosition, yPosition);
 						yPosition++;
-						drawPlayer(xPosition, yPosition);
+						drawUnit("Player", xPosition, yPosition);
 					}
 				break;
-				case W:
+				case Direction.WEST:
 					if(maze[yPosition][xPosition-1] == 0) {
-						eraseOldPlayerPos(xPosition, yPosition);
+						eraseOldPos(xPosition, yPosition);
 						xPosition--;
-						drawPlayer(xPosition, yPosition);
+						drawUnit("Player", xPosition, yPosition);
 					}
 				break;
 			}
