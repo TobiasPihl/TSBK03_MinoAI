@@ -8,7 +8,7 @@ var Maze = (function(){
 
     return {
         //Create a maze by using the input varables of the maze's dimension
-        createMaze: function(maze, mazeWidth, mazeHeight){
+        createMaze: function(maze, mazeWidth, mazeHeight) {
 
         //Create a mutltidimensional array of ones
         //ones = wall

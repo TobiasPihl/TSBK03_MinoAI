@@ -3,18 +3,10 @@
 var playerXPos = 10;
 var playerYPos = 10;
 
-//____________________
-
-//Phaser game variable
-var game;
 
 //enemy
 var minoXPos = 18;
 var minoYPos = 18;
-
-//random destinationpoint
-var destinationX;
-var destinationY;
 
 //Enemy states
 var minoState;
@@ -23,8 +15,19 @@ var stateChasing = 1;
 
 //maze properties
 var maze = [];
-var mazeWidth = 80;
-var mazeHeight = 60;
+var mazeWidth = 40;
+var mazeHeight = 40;
+//____________________
+
+var mazeGraphics;
+var tileSize = 10;
+
+//Phaser game variable
+var game;
+
+//random destinationpoint
+var destinationX;
+var destinationY;
 
 //easystar path
 var globalPath = null;
@@ -43,12 +46,14 @@ var line;
 var tileHits = [];
 
 window.onload = function() {
-	game = new Phaser.Game(mazeWidth*tileSize, mazeHeight*tileSize, Phaser.auto, 'content');
+	game = new Phaser.Game(mazeWidth * tileSize, 
+			mazeHeight * tileSize, 
+			Phaser.auto, 'content');
 	game.state.add("PlayGame",playGame);
 	game.state.start("PlayGame");
 }
 
-var playGame = function(game){};
+var playGame = function(game){}; //Delete This Or Use IT???
 
 playGame.prototype = {
 
@@ -94,7 +99,10 @@ playGame.prototype = {
 
 //update all visuals
 function updateGraphics(easystar) {
+	
 	mazeGraphics.clear();
+	//drawGraphics.clearGraphics();
+	
 	drawMaze();
 	drawPlayer(player.getX(), player.getY());
 	drawMino();
@@ -116,4 +124,17 @@ function inputCheckLoop() {
 			player.playerMovement(W);
 		}
 	})
+}
+
+//Draw a path showing the calculated path to target location
+function drawPath(path){
+
+	var i = 1;
+	while (i<path.length-1) {
+		mazeGraphics.beginFill(0xFF0000);
+		mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
+		i++;
+		mazeGraphics.endFill();
+	}
+	globalPath = path; //Edit
 }
