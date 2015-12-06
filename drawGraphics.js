@@ -1,7 +1,7 @@
 
 //Draw player, updating his position
 function drawPlayer(xPos, yPos) {
-	console.log("drawing player at:" + xPos + ", " + yPos);
+	//console.log("drawing player at:" + xPos + ", " + yPos);
 	mazeGraphics.beginFill(0x25DD00);
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 }
@@ -44,4 +44,3 @@ function drawPath(path){
 	}
 	globalPath = path;
 }
-

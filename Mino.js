@@ -15,12 +15,12 @@ var Mino = (function(){
 							case stateSearching:
 								console.log("Searching");
 								Mino.getRandomPoint();
+								destinationX = player.getX(); //playerXPos;
+								destinationY = player.getY(); //playerYPos;
 								Mino.calculatePath(easystar, destinationX, destinationY);
 							break;
 							case stateChasing:
 								console.log("Chasing");
-								destinationX = player.getX(); //playerXPos;
-								destinationY = player.getY(); //playerYPos;
 								Mino.calculatePath(easystar, destinationX, destinationY);
 							break;
 						}
@@ -74,7 +74,9 @@ var Mino = (function(){
 
 				//update all visuals ?????
 				calculatePath: function(easystar, xPos, yPos) {
-					easystar.findPath(minoXPos, minoYPos, 
+					console.log(minoXPos + " " + minoYPos);
+					console.log(xPos + " " + yPos);
+					easystar.findPath(minoXPos, minoYPos,
 							xPos, yPos, drawPath);
 					easystar.calculate();
 					pathStep = 0;
