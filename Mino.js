@@ -1,106 +1,133 @@
+//Mino Object
 var Mino = (function(){
 
+		//Private Variables
+		var xPosition = 18;
+		var yPosition = 18;
+
+		var xDestination;
+		var yDestination;
+
+		var State = {
+			SEARCHING: 1,
+			CHASING: 2,
+		};
+
+		var myState = State.SEARCHING;
+
 		return {
-				//Update the path which the monster is walking
-				updateMinoPath: function(easystar){
 
-					game.time.events.loop(Phaser.Timer.SECOND*5, function(){
+			//Get x coordinate
+			getX: function() { return xPosition },
 
-						line = new Phaser.Line(minoXPos, minoYPos, playerXPos, playerYPos);
+			//Get y coordinate
+			getY: function() { return yPosition },
 
-						if(Mino.getLineOfSight(line)){
-						}
+			//Set potition
+			setPosition: function(xPos, yPos) {
+				xPosition = xPos;
+				yPosition = yPos;
+			},
 
-						switch(minoState) {
-							case stateSearching:
-								console.log("Searching");
-								Mino.getRandomPoint();
-								destinationX = player.getX(); //playerXPos;
-								destinationY = player.getY(); //playerYPos;
-								Mino.calculatePath(easystar, destinationX, destinationY);
-							break;
-							case stateChasing:
-								console.log("Chasing");
-								Mino.calculatePath(easystar, destinationX, destinationY);
-							break;
-						}
-					});
-				},
+			//Update the path which the monster is walking
+			updateMinoPath: function(easystar){
 
-				//Move the mino enemy
-				moveMino: function() {
-					game.time.events.loop(Phaser.Timer.SECOND/15, function(){
+				game.time.events.loop(Phaser.Timer.SECOND*5, function(){
 
-						if( (minoXPos == destinationX && minoYPos == destinationY))
-							console.log("At destination")
-						else {
-							eraseOldPlayerPos(minoXPos,minoYPos); //erase enemy(same funtion)
-							pathStep++;
-							minoXPos = globalPath[pathStep].x;
-							minoYPos = globalPath[pathStep].y;
-							drawMino();
-						}
-					});
-				},
+					line = new Phaser.Line(xPosition, yPosition,
+							player.getX(), player.getY());
 
-				getLineOfSight: function(line){
+					if(Mino.getLineOfSight(line)) {
+					}
 
-						//var intersect = line.intersects(maze, true);
-						//If the lenght between player and mino is smaller than line.lenght
-						//change state
-						console.log(Math.floor(line.length));
-						if(Math.floor(line.length) < 15){
-							minoState = stateChasing;
-							return true;
-						}
-						else {
-							minoState = stateSearching;
-						}
-				},
+					switch( myState ) {
+						case State.SEARCHING:
+							console.log("Searching");
+							Mino.getRandomPoint();
+							Mino.calculatePath(easystar, xDestination, yDestination);
+						break;
+						case State.CHASING:
+							console.log("Chasing");
+							xDestination = player.getX();
+							yDestination = player.getY();
+							Mino.calculatePath(easystar, xDestination, yDestination);
+						break;
+					}
+				});
+			},
 
-				//validate a given random point by checking if it's walkable
-				validatePoint: function(xPos, yPos) {
+			//Move the mino enemy
+			moveMino: function() {
+				game.time.events.loop(Phaser.Timer.SECOND/15, function(){
 
-					//TODO: INSTEAD CHECK IF THERE IS A PATH TO THE RAND POINT
-					if( maze[xPos+1][yPos] == 1 &&
-							maze[xPos-1][yPos] == 1 &&
-							maze[xPos][yPos+1] == 1 &&
-							maze[xPos][yPos-1] == 1 )
-						return false;
+					if( (xPosition == xDestination && yPosition == yDestination))
+						console.log("At destination")
+					else {
+						eraseOldPos(xPosition, yPosition); //erase enemy(same funtion)
+						pathStep++;
+						xPosition = globalPath[pathStep].x;
+						yPosition = globalPath[pathStep].y;
+						drawUnit("Mino", xPosition, yPosition);
+					}
+				});
+			},
 
-					//returns false if point not walkable
-					return (maze[xPos][yPos] == 0);
-				},
+			getLineOfSight: function(line){
 
-				//update all visuals ?????
-				calculatePath: function(easystar, xPos, yPos) {
-					console.log(minoXPos + " " + minoYPos);
-					console.log(xPos + " " + yPos);
-					easystar.findPath(minoXPos, minoYPos,
-							xPos, yPos, drawPath);
-					easystar.calculate();
-					pathStep = 0;
+					//var intersect = line.intersects(maze, true);
+					//If the lenght between player and mino is smaller than line.lenght
+					//change state
+					console.log(Math.floor(line.length));
+					if(Math.floor(line.length) < 15){
+						myState = State.CHASING;
+						return true; 		// WHY?
+					}
+					else {
+						myState = State.SEARCHING;
+					}
+			},
 
-					updateGraphics();
-				},
+			//validate a given random point by checking if it's walkable
+			validatePoint: function(xPos, yPos) {
 
-				//Get random spot in labyrinth
-				getRandomPoint: function() {
+				//TODO: INSTEAD CHECK IF THERE IS A PATH TO THE RAND POINT
+				if( maze[xPos+1][yPos] == 1 &&
+						maze[xPos-1][yPos] == 1 &&
+						maze[xPos][yPos+1] == 1 &&
+						maze[xPos][yPos-1] == 1 )
+					return false;
 
-					var xRand;
-					var yRand;
+				//returns false if point not walkable
+				return (maze[xPos][yPos] == 0);
+			},
 
-					//keep trying until random point is walkable
-					do {
-						xRand = Math.floor(Math.random() * (mazeWidth-2)) + 1;
-						yRand = Math.floor(Math.random() * (mazeHeight-2)) + 1;
+			//update all visuals ?????
+			calculatePath: function(easystar) {
+				console.log("Destination: " + xDestination + " " + yDestination);
+				console.log("Current position: " + xPosition + " " + yPosition);
+				easystar.findPath(xPosition, yPosition,
+						xDestination, yDestination, drawPath);
+				easystar.calculate();
+				pathStep = 0;
 
-						// console.log("Randomized: " + xRand + ", " + yRand);
-						// console.log("rPoint has property: " + maze[xRand][yRand]);
-					} while (!Mino.validatePoint(yRand, xRand));
+				updateGraphics();
+			},
 
-					destinationX = xRand;
-					destinationY = yRand;
-				}
+			//Get random spot in labyrinth
+			getRandomPoint: function() {
+
+				var xRand;
+				var yRand;
+
+				//keep trying until random point is walkable
+				do {
+					xRand = Math.floor(Math.random() * (mazeWidth-2)) + 1;
+					yRand = Math.floor(Math.random() * (mazeHeight-2)) + 1;
+				} while (!Mino.validatePoint(yRand, xRand));
+
+				xDestination = xRand;
+				yDestination = yRand;
+			}
+
 		}
 })();

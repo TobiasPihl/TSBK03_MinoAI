@@ -1,19 +1,24 @@
+//Draw unit
+function drawUnit(type, xPos, yPos) {
 
-//Draw player, updating his position
-function drawPlayer(xPos, yPos) {
-	//console.log("drawing player at:" + xPos + ", " + yPos);
-	mazeGraphics.beginFill(0x25DD00);
+	var color = 0x000000;
+
+	switch (type) {
+		case "Player":
+			color = 0x25DD00;
+		break;
+		case "Mino":
+			color = 0xFFFF00;
+		break;
+	}
+	mazeGraphics.beginFill(color);
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 }
 
-//Draw player, updating his position
-function drawMino() {
-	mazeGraphics.beginFill(0xFFFF00);
-	mazeGraphics.drawRect(minoXPos * tileSize, minoYPos * tileSize, tileSize, tileSize);
-}
+//Erase unit from its old postition
+function eraseOldPos(xPos, yPos) {
 
-//when player moves, delete player icon from old position
-function eraseOldPlayerPos(xPos, yPos) {
+	//Send type and check if there should be any other color than black
 	mazeGraphics.beginFill(0x000000);
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 }
