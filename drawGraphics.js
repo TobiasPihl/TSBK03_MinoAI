@@ -18,7 +18,6 @@ function drawUnit(type, xPos, yPos) {
 //Erase unit from its old postition
 function eraseOldPos(xPos, yPos) {
 	
-	//Send type and check if there should be any other color than black
 	mazeGraphics.beginFill(0x000000);
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 }
