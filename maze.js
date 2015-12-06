@@ -3,13 +3,8 @@ var Maze = (function(){
 
     //maze properties
     var maze = [];
-    var mazeWidth = 60;
-    var mazeHeight = 40;
-	
+    
     return {
-		
-		//Get maze
-		//getMaze() { return maze },
 		
         //Create a maze by using the input varables of the maze's dimension
         createMaze: function(maze, mazeWidth, mazeHeight) {

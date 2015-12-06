@@ -67,7 +67,6 @@ var Mino = (function(){
 						pathStep++;
 						xPosition = globalPath[pathStep].x;
 						yPosition = globalPath[pathStep].y;
-						//drawMino();
 						drawUnit("Mino", xPosition, yPosition);
 					}
 				});

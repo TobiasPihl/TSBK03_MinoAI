@@ -53,7 +53,7 @@ playGame.prototype = {
 		easystar.setAcceptableTiles([0]);
 
 		//set initial random patrol point
-		Mino.getRandomPoint();
+		Mino.getRandomPoint(mazeWidth, mazeHeight);
 		Mino.calculatePath(easystar /*, destinationX, destinationY*/);
 
 		//start loop which updates the mino's pathfinding
