@@ -66,10 +66,10 @@ playGame.prototype = {
 		//var intersect = this.get
 
 		//set controllers
-		UP_ARROW	= this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
-		DOWN_ARROW	= this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-		LEFT_ARROW	= this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-		RIGHT_ARROW	= this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+		UP_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.UP);
+		DOWN_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+		LEFT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+		RIGHT_ARROW	= game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
 		//Initiate key input loop
 		inputCheckLoop();
