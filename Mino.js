@@ -93,7 +93,7 @@ var Mino = (function(){
 					
 					stepIterator += 1;
 					
-					//Move Mino
+					//Move Mino along path each iteration of the loop
 					Mino.moveMino();
 					
 					if(stepIterator >= stepsPerPath) {
