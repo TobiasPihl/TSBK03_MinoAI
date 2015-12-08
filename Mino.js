@@ -132,6 +132,9 @@ var Mino = (function(){
 					else {
 						eraseOldPos(xPosition, yPosition);
 						pathStep++;
+						if(globalPath == null){
+							console.log("Path is null");
+						}
 						xPosition = globalPath[pathStep].x;
 						yPosition = globalPath[pathStep].y;
 						drawUnit("Mino", xPosition, yPosition);
@@ -139,25 +142,37 @@ var Mino = (function(){
 				});
 			},
 
+			//	TODO: MODIFY THIS IN ORDER TO MAKE MINO ACT DIFFERENTLY IF HE'S CLOSER TO PLAYER
+			getRadious: function(){
+				line = new Phaser.Line(xPosition, yPosition,
+						player.getX(), player.getY());
+			},
+			
+			//Returns true if there is no wall along the line
+			//Wall equals a maze value of zero
 			getLineOfSight: function(){
 					
-					//var intersect = line.intersects(maze, true);
-					//If the lenght between player and mino is smaller than line.lenght
-					//change state
-					
-					//console.log(Math.floor(line.length));
-					
 					line = new Phaser.Line(xPosition, yPosition,
-							player.getX(), player.getY());
+						player.getX(), player.getY());
 					
-					if(Math.floor(line.length) < 15){
-						//myState = State.CHASING;
-						return true; 		// WHY?
+					var arr = [];
+					//Store all the coordinates values along the line in an array
+					line.coordinatesOnLine(0.5, arr);
+
+					//Loop through the array
+					for(i = 0; i < arr.length; i++ ){
+
+						//Check if the coordinates in the array equals a wall
+						if(maze[ arr[i][1] ][ arr[i][0] ] == 1){
+							console.log("NOT IN SIGHT");
+							return false;
+						}
 					}
-					else {
-						//myState = State.SEARCHING;
-						return false;
-					}
+
+					//If the array cleared the check no wall where found
+					// and the function returns true
+					console.log("IN SIGHT");
+					return true;
 			},
 
 			//validate a given random point by checking if it's walkable
@@ -176,11 +191,13 @@ var Mino = (function(){
 
 			// Calculate path from current point to destination
 			calculatePath: function(easystar) {
-				easystar.findPath(xPosition, yPosition, xDestination, yDestination, drawPath);
-				easystar.calculate();
-				pathStep = 0;
+				if(!(xPosition == xDestination && yPosition == yDestination)) {
+					easystar.findPath(xPosition, yPosition, xDestination, yDestination, drawPath);
+					easystar.calculate();
+					pathStep = 0;
 
-				updateGraphics();
+					updateGraphics();
+				}				
 			},
 
 			//Get random spot in labyrinth

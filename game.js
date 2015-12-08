@@ -1,8 +1,8 @@
 
 //maze properties
 var maze = [];
-var mazeWidth = 40;
-var mazeHeight = 40;
+var mazeWidth = 30;
+var mazeHeight = 30;
 
 //____________________
 
