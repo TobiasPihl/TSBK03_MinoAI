@@ -61,7 +61,7 @@ playGame.prototype = {
 		Mino.calculatePath(easystar);
 
 		//start loop which moves enemy Mino
-		Mino.moveMino();
+		//Mino.moveMino();
 
 		//start loop which updates the mino's pathfinding
 		Mino.updateMinoPath();
