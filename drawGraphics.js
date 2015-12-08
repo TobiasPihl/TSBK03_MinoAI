@@ -1,8 +1,8 @@
 //Draw unit
 function drawUnit(type, xPos, yPos) {
-	
+
 	var color = 0x000000;
-	
+
 	switch (type) {
 		case "Player":
 			color = 0x25DD00;
@@ -17,7 +17,7 @@ function drawUnit(type, xPos, yPos) {
 
 //Erase unit from its old postition
 function eraseOldPos(xPos, yPos) {
-	
+	//Send type and check if there should be any other color than black
 	mazeGraphics.beginFill(0x000000);
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 }
@@ -48,4 +48,3 @@ function drawPath(path){
 	}
 	globalPath = path;
 }
-
