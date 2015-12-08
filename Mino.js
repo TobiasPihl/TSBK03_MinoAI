@@ -18,12 +18,12 @@ var Mino = (function(){
 		var patrolPathUpdateLoop;
 		var moveMinoLoop;
 		
-		var searchSpeedInterval = Phaser.Timer.SECOND/3;
-		var chaseSpeedInterval = Phaser.Timer.SECOND/5;
-		var speedInterval = searchSpeedInterval;
-
-		var searchUpdateInterval = Phaser.Timer.SECOND*5;
-		var chaseUpdateInterval = Phaser.Timer.SECOND/5;
+		var stepsPerPathSearch = 10;
+		var stepsPerPathChase = 2;
+		var stepsPerPath = stepsPerPathSearch;
+		
+		var searchUpdateInterval = Phaser.Timer.SECOND/4;
+		var chaseUpdateInterval = Phaser.Timer.SECOND/6;
 		var updateInterval = searchUpdateInterval;
 
 		return {
@@ -45,10 +45,14 @@ var Mino = (function(){
 				
 				myState = state;
 				
-				switch (state) {
+				switch (myState) {
 					case State.SEARCHING:
+						updateInterval = searchUpdateInterval;
+						stepsPerPath = stepsPerPathSearch;
 					break;
 					case State.CHASING:
+						stepsPerPath = stepsPerPathChase;
+						updateInterval = chaseUpdateInterval;
 					break;
 				}
 			},
@@ -60,46 +64,42 @@ var Mino = (function(){
 			shouldChaseTest: function() {
 
 				if( Mino.getLineOfSight() && myState == State.SEARCHING ){
-					myState = State.CHASING;
-					//Mino.setState(State.CHASING); //IMPLEMENT!!
 					
+					//myState = State.CHASING;
+					Mino.setState(State.CHASING);
 					
 					//restart updatePath loop with proper interval
 					game.time.events.remove(patrolPathUpdateLoop); 
 					Mino.updateMinoPath();
-					
-					//restart moveMino loop with proper speed
-					game.time.events.remove(moveMinoLoop);
-					Mino.moveMino();
 				}
 				else if( !Mino.getLineOfSight() && myState == State.CHASING &&
 						xPosition == xDestination && yPosition == yDestination) {
-					myState = State.SEARCHING;
+					
+					//myState = State.SEARCHING;
+					Mino.setState(State.SEARCHING);
 					
 					//restart updatePath loop with proper interval
 					game.time.events.remove(patrolPathUpdateLoop);
 					Mino.updateMinoPath();
-					
-					//restart moveMino loop with proper speed
-					game.time.events.remove(moveMinoLoop);
-					Mino.moveMino();
 				}
 			},
 
 			updateMinoPath: function(){
-
-				switch (myState) {
-					case State.SEARCHING:
-						updateInterval = searchUpdateInterval;
-					break;
-					case State.CHASING:
-						updateInterval = chaseUpdateInterval;
-					break;
-				}
-
+				
+				var stepIterator = 0;
+				
 				//A loop defining how often the mino updates his path when SEARCHING
 				patrolPathUpdateLoop = game.time.events.loop(updateInterval, function(){
-					Mino.choosePathByState();
+					
+					stepIterator += 1;
+					
+					//Move Mino
+					Mino.moveMino();
+					
+					if(stepIterator >= stepsPerPath) {
+						Mino.choosePathByState();
+						stepIterator = 0;
+					}
 				});
 			},
 
@@ -111,8 +111,6 @@ var Mino = (function(){
 						Mino.calculatePath(easystar, xDestination, yDestination);
 					break;
 					case State.CHASING:
-						//xDestination = player.getX();
-						//yDestination = player.getY();
 						Mino.calculatePath(easystar, xDestination, yDestination);
 					break;
 				}
@@ -120,36 +118,20 @@ var Mino = (function(){
 
 			//Move the Mino along path with an interval
 			moveMino: function() {
-
-				//choose speed depending on state
-				switch (myState) {
-					case State.SEARCHING:
-						speedInterval = searchSpeedInterval;
-					break;
-					case State.CHASING:
-						speedInterval = chaseSpeedInterval;
-					break;
+				if( !(xPosition == xDestination && yPosition == yDestination)) {
+				
+					eraseOldPos(xPosition, yPosition);
+					pathStep++;
+					
+					if(globalPath[pathStep] == null){
+						console.log("Path is null");
+					}
+					else{
+						xPosition = globalPath[pathStep].x;
+						yPosition = globalPath[pathStep].y;
+					}
+					drawUnit("Mino", xPosition, yPosition);
 				}
-
-				moveMinoLoop = game.time.events.loop(speedInterval, function(){
-
-					if( (xPosition == xDestination && yPosition == yDestination)) {
-					}
-					else {
-						eraseOldPos(xPosition, yPosition);
-						pathStep++;
-						if(globalPath[pathStep] == null){
-							console.log("Path is null");
-
-						}
-						else{
-							xPosition = globalPath[pathStep].x;
-							yPosition = globalPath[pathStep].y;
-						}
-
-						drawUnit("Mino", xPosition, yPosition);
-					}
-				});
 			},
 
 			//	TODO: MODIFY THIS IN ORDER TO MAKE MINO ACT DIFFERENTLY IF HE'S CLOSER TO PLAYER
