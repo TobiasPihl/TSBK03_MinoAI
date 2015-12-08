@@ -27,6 +27,9 @@ var Direction = {
 	WEST  : 3,
 };
 
+//Graphics
+var groundColor = 0x1C1C1C;
+
 window.onload = function() {
 	game = new Phaser.Game(mazeWidth*tileSize, mazeHeight*tileSize, Phaser.auto, 'content');
 	game.state.add("PlayGame",playGame);
@@ -43,8 +46,9 @@ playGame.prototype = {
 
 	//CREATE FUNCTION
 	create: function(){
-		// Setup game enviroment
 
+		this.game.stage.backgroundColor = groundColor;
+		
 		//set Player position
 		player.setPosition(5, 5);
 
@@ -76,6 +80,9 @@ playGame.prototype = {
 
 		//Initiate key input loop
 		inputCheckLoop();
+		
+		//CREATE COINS!!! WOOHOO
+		Coins.createCoins();
 	},
 
 	update: function(){

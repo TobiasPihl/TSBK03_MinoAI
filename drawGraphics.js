@@ -5,10 +5,13 @@ function drawUnit(type, xPos, yPos) {
 
 	switch (type) {
 		case "Player":
-			color = 0x25DD00;
+			color = 0x04B404;
 		break;
 		case "Mino":
-			color = 0xFFFF00;
+			color = 0xB40404;
+		break;
+		case "Coin":
+			color = 0xFFBF00;
 		break;
 	}
 	mazeGraphics.beginFill(color);
@@ -18,7 +21,7 @@ function drawUnit(type, xPos, yPos) {
 //Erase unit from its old postition
 function eraseOldPos(xPos, yPos) {
 	//Send type and check if there should be any other color than black
-	mazeGraphics.beginFill(0x000000);
+	mazeGraphics.beginFill(groundColor);
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 }
 
@@ -39,13 +42,13 @@ function drawMaze(posX, posY){
 //Draw a path showing the calculated path to target location
 function drawPath(path){
 
-	var i = 1;
-	while (i<path.length-1) {
-		mazeGraphics.beginFill(0xFF0000);
-		mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
-		i++;
-		mazeGraphics.endFill();
-	}
+	// var i = 1;
+	// while (i<path.length-1) {
+		// mazeGraphics.beginFill(0xFF0000);
+		// mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
+		// i++;
+		// mazeGraphics.endFill();
+	// }
 	globalPath = path;
 }
 
