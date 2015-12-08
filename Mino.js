@@ -32,12 +32,16 @@ var Mino = (function(){
 			//Update the path which the monster is walking
 			updateMinoPath: function(easystar){
 
-				game.time.events.loop(Phaser.Timer.SECOND*5, function(){
+				game.time.events.loop(Phaser.Timer.SECOND*3, function(){
 
 					line = new Phaser.Line(xPosition, yPosition,
 							player.getX(), player.getY());
 
 					if(Mino.getLineOfSight(line)) {
+						myState = State.CHASING;
+					}
+					else{
+						myState = State.SEARCHING;
 					}
 
 					switch( myState ) {
@@ -65,6 +69,9 @@ var Mino = (function(){
 					else {
 						eraseOldPos(xPosition, yPosition); //erase enemy(same funtion)
 						pathStep++;
+						if(globalPath == null){
+							console.log("Path is null");
+						}
 						xPosition = globalPath[pathStep].x;
 						yPosition = globalPath[pathStep].y;
 						drawUnit("Mino", xPosition, yPosition);
@@ -72,19 +79,28 @@ var Mino = (function(){
 				});
 			},
 
+			//Returns true if there is no wall along the line
+			//Wall equals a maze value of zero
 			getLineOfSight: function(line){
 
-					//var intersect = line.intersects(maze, true);
-					//If the lenght between player and mino is smaller than line.lenght
-					//change state
-					console.log(Math.floor(line.length));
-					if(Math.floor(line.length) < 15){
-						myState = State.CHASING;
-						return true; 		// WHY?
+					var arr = [];
+					//Store all the coordinates values along the line in an array
+					line.coordinatesOnLine(0.5, arr);
+
+					//Loop through the array
+					for(i = 0; i < arr.length; i++ ){
+
+						//Check if the coordinates in the array equals a wall
+						if(maze[ arr[i][1] ][ arr[i][0] ] == 1){
+							console.log("NOT IN SIGHT");
+							return false;
+						}
 					}
-					else {
-						myState = State.SEARCHING;
-					}
+
+					//If the array cleared the check no wall where found
+					// and the function returns true
+					console.log("IN SIGHT");
+					return true;
 			},
 
 			//validate a given random point by checking if it's walkable
@@ -103,8 +119,6 @@ var Mino = (function(){
 
 			//update all visuals ?????
 			calculatePath: function(easystar) {
-				console.log("Destination: " + xDestination + " " + yDestination);
-				console.log("Current position: " + xPosition + " " + yPosition);
 				easystar.findPath(xPosition, yPosition,
 						xDestination, yDestination, drawPath);
 				easystar.calculate();
