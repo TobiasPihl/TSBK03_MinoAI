@@ -48,3 +48,25 @@ function drawPath(path){
 	}
 	globalPath = path;
 }
+
+function drawLOS(){
+
+	//var line = new Phaser.Line(xPosition, yPosition,
+	//	player.getX(), player.getY());
+
+		var lines = [
+            new Phaser.Line(xPosition, yPosition, mazeWidth, yPosition),
+            new Phaser.Line(xPosition, yPosition, 0, yPosition),
+            new Phaser.Line(xPosition, yPosition, xPosition, mazeHeight),
+            new Phaser.Line(xPosition, yPosition, xPosition, 0)
+        ];
+
+				var j = 0;
+		while(j < lines.length){
+			mazeGraphics.beginFill(0x0000FF);
+			mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
+			j++;
+			mazeGraphics.endFill();
+		}
+
+}
