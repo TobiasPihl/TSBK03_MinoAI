@@ -18,11 +18,11 @@ var Mino = (function(){
 		var patrolPathUpdateLoop;
 		var moveMinoLoop;
 		
-		var searchSpeedInterval = Phaser.Timer.SECOND/2;
+		var searchSpeedInterval = Phaser.Timer.SECOND/200;
 		var chaseSpeedInterval = Phaser.Timer.SECOND/6;
 		var speedInterval = searchSpeedInterval;
 		
-		var searchUpdateInterval = Phaser.Timer.SECOND*5;
+		var searchUpdateInterval = Phaser.Timer.SECOND*0.3;
 		var chaseUpdateInterval = Phaser.Timer.SECOND/2;
 		var updateInterval = searchUpdateInterval;
 		
@@ -50,30 +50,26 @@ var Mino = (function(){
 			shouldChaseTest: function() {
 				
 				if( Mino.getLineOfSight() && myState == State.SEARCHING ){
-					console.log("Start Chasing");
-					
 					myState = State.CHASING;
-					
-					//restart moveMino loop with proper speed
-					game.time.events.remove(moveMinoLoop); 
-					Mino.moveMino();
 					
 					//restart updatePath loop with proper interval
 					game.time.events.remove(patrolPathUpdateLoop); 
-					Mino.updateMinoPath(updateInterval);
-				}
-				else if( !Mino.getLineOfSight() && myState == State.CHASING ) {
-					console.log("Stop Chasing");
-					
-					myState = State.SEARCHING;
+					Mino.updateMinoPath();
 					
 					//restart moveMino loop with proper speed
 					game.time.events.remove(moveMinoLoop); 
 					Mino.moveMino();
+				}
+				else if( !Mino.getLineOfSight() && myState == State.CHASING ) {
+					myState = State.SEARCHING;
 					
 					//restart updatePath loop with proper interval
 					game.time.events.remove(patrolPathUpdateLoop);
-					Mino.updateMinoPath(updateInterval);
+					Mino.updateMinoPath();
+					
+					//restart moveMino loop with proper speed
+					game.time.events.remove(moveMinoLoop); 
+					Mino.moveMino();
 				}
 			},
 			
@@ -98,12 +94,10 @@ var Mino = (function(){
 			choosePathByState: function () {
 				switch( myState ) {
 					case State.SEARCHING:
-						console.log("Searching");
 						Mino.getRandomPoint();
 						Mino.calculatePath(easystar, xDestination, yDestination);
 					break;
 					case State.CHASING:
-						console.log("Chasing");
 						xDestination = player.getX();
 						yDestination = player.getY();
 						Mino.calculatePath(easystar, xDestination, yDestination);
@@ -127,7 +121,6 @@ var Mino = (function(){
 				moveMinoLoop = game.time.events.loop(speedInterval, function(){
 
 					if( (xPosition == xDestination && yPosition == yDestination)) {
-						console.log("At destination")
 					}
 					else {
 						eraseOldPos(xPosition, yPosition);
@@ -152,6 +145,7 @@ var Mino = (function(){
 			//Wall equals a maze value of zero
 			getLineOfSight: function(){
 					
+					//get line between mino and player
 					line = new Phaser.Line(xPosition, yPosition,
 						player.getX(), player.getY());
 					
@@ -164,14 +158,15 @@ var Mino = (function(){
 
 						//Check if the coordinates in the array equals a wall
 						if(maze[ arr[i][1] ][ arr[i][0] ] == 1){
-							console.log("NOT IN SIGHT");
 							return false;
 						}
 					}
 
 					//If the array cleared the check no wall where found
 					// and the function returns true
-					console.log("IN SIGHT");
+					
+					xDestination = player.getX();
+					yDestination = player.getY();
 					return true;
 			},
 
