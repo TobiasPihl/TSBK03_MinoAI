@@ -21,28 +21,28 @@ var player = (function() {
 			switch (dir) {
 				case Direction.NORTH:
 					if(maze[yPosition-1][xPosition] == 0) {
-						eraseOldPos(xPosition, yPosition);
+						eraseOldPos("Player", xPosition, yPosition);
 						yPosition--;
 						drawUnit("Player", xPosition, yPosition);
 					}
 				break;
 				case Direction.EAST:
 					if(maze[yPosition][xPosition+1] == 0) {
-						eraseOldPos(xPosition, yPosition);
+						eraseOldPos("Player", xPosition, yPosition);
 						xPosition++;
 						drawUnit("Player", xPosition, yPosition);
 					}
 				break;
 				case Direction.SOUTH:
 					if(maze[yPosition+1][xPosition] == 0) {
-						eraseOldPos(xPosition, yPosition);
+						eraseOldPos("Player", xPosition, yPosition);
 						yPosition++;
 						drawUnit("Player", xPosition, yPosition);
 					}
 				break;
 				case Direction.WEST:
 					if(maze[yPosition][xPosition-1] == 0) {
-						eraseOldPos(xPosition, yPosition);
+						eraseOldPos("Player", xPosition, yPosition);
 						xPosition--;
 						drawUnit("Player", xPosition, yPosition);
 					}

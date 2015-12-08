@@ -120,7 +120,7 @@ var Mino = (function(){
 			moveMino: function() {
 				if( !(xPosition == xDestination && yPosition == yDestination)) {
 				
-					eraseOldPos(xPosition, yPosition);
+					eraseOldPos("Mino", xPosition, yPosition);
 					pathStep++;
 					
 					if(globalPath[pathStep] == null){

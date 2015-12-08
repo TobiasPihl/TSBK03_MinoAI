@@ -19,9 +19,24 @@ function drawUnit(type, xPos, yPos) {
 }
 
 //Erase unit from its old postition
-function eraseOldPos(xPos, yPos) {
+function eraseOldPos(type, xPos, yPos) {
 	//Send type and check if there should be any other color than black
-	mazeGraphics.beginFill(groundColor);
+	
+	var newColor = groundColor;
+	
+	switch (type) {
+		case "Player":
+		break;
+		case "Mino":
+		break;
+		case "Coin":
+			if(xPos == player.getX() && yPos == player.getY())
+				newColor = 0x04B404;
+		break;
+	}
+	
+	
+	mazeGraphics.beginFill(newColor);
 	mazeGraphics.drawRect(xPos * tileSize, yPos * tileSize, tileSize, tileSize);
 }
 

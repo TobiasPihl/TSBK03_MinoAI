@@ -54,7 +54,10 @@ playGame.prototype = {
 
 		//NO NEED TO DO THIS, FIX
 		maze = Maze.createMaze(maze, mazeWidth, mazeHeight);
-
+		
+		//CREATE COINS!!! WOOHOO
+		Coins.createCoins();
+	
 		//Set easystar properties
 		easystar = new EasyStar.js();
 		easystar.setGrid(maze);
@@ -63,10 +66,7 @@ playGame.prototype = {
 		//set initial random patrol point
 		Mino.getRandomPoint(mazeWidth, mazeHeight);
 		Mino.calculatePath(easystar);
-
-		//start loop which moves enemy Mino
-		//Mino.moveMino();
-
+		
 		//start loop which updates the mino's pathfinding
 		Mino.updateMinoPath();
 
@@ -80,15 +80,15 @@ playGame.prototype = {
 
 		//Initiate key input loop
 		inputCheckLoop();
-		
-		//CREATE COINS!!! WOOHOO
-		Coins.createCoins();
 	},
 
 	update: function(){
 		
 		//changes state to chasing ir requirements are met
 		Mino.shouldChaseTest();
+		
+		//Check if player walks over a coin
+		Coins.collectCheck(player.getX(), player.getY());
 	}
 }
 
@@ -98,6 +98,7 @@ function updateGraphics(easystar) {
 	drawMaze();
 	drawUnit("Player", player.getX(), player.getY());
 	drawUnit("Mino", Mino.getX(), Mino.getY());
+	drawUnit("Coin", Coins.getX(), Coins.getY());
 }
 
 //Key input loop
