@@ -14,18 +14,18 @@ var Mino = (function(){
 		};
 
 		var myState = State.SEARCHING;
-		
+
 		var patrolPathUpdateLoop;
 		var moveMinoLoop;
-		
+
 		var searchSpeedInterval = Phaser.Timer.SECOND/2;
 		var chaseSpeedInterval = Phaser.Timer.SECOND/6;
 		var speedInterval = searchSpeedInterval;
-		
+
 		var searchUpdateInterval = Phaser.Timer.SECOND*5;
 		var chaseUpdateInterval = Phaser.Timer.SECOND/2;
 		var updateInterval = searchUpdateInterval;
-		
+
 		return {
 
 			//Get x coordinate
@@ -39,46 +39,46 @@ var Mino = (function(){
 				xPosition = xPos;
 				yPosition = yPos;
 			},
-			
+
 			//Set state
 			setState: function(state) {},
-			
+
 			//Get state
 			getState: function() {return myState},
-			
+
 			//Test if mino should start chasing
 			shouldChaseTest: function() {
-				
+
 				if( Mino.getLineOfSight() && myState == State.SEARCHING ){
 					console.log("Start Chasing");
-					
+
 					myState = State.CHASING;
-					
+
 					//restart moveMino loop with proper speed
-					game.time.events.remove(moveMinoLoop); 
+					game.time.events.remove(moveMinoLoop);
 					Mino.moveMino();
-					
+
 					//restart updatePath loop with proper interval
-					game.time.events.remove(patrolPathUpdateLoop); 
+					game.time.events.remove(patrolPathUpdateLoop);
 					Mino.updateMinoPath(updateInterval);
 				}
 				else if( !Mino.getLineOfSight() && myState == State.CHASING ) {
 					console.log("Stop Chasing");
-					
+
 					myState = State.SEARCHING;
-					
+
 					//restart moveMino loop with proper speed
-					game.time.events.remove(moveMinoLoop); 
+					game.time.events.remove(moveMinoLoop);
 					Mino.moveMino();
-					
+
 					//restart updatePath loop with proper interval
 					game.time.events.remove(patrolPathUpdateLoop);
 					Mino.updateMinoPath(updateInterval);
 				}
 			},
-			
+
 			updateMinoPath: function(){
-				
+
 				switch (myState) {
 					case State.SEARCHING:
 						updateInterval = searchUpdateInterval;
@@ -87,13 +87,13 @@ var Mino = (function(){
 						updateInterval = chaseUpdateInterval;
 					break;
 				}
-				
+
 				//A loop defining how often the mino updates his path when SEARCHING
 				patrolPathUpdateLoop = game.time.events.loop(updateInterval, function(){
 					Mino.choosePathByState();
 				});
 			},
-			
+
 			//A destination point for the path is set depending on active state
 			choosePathByState: function () {
 				switch( myState ) {
@@ -113,7 +113,7 @@ var Mino = (function(){
 
 			//Move the Mino along path with an interval
 			moveMino: function() {
-				
+
 				//choose speed depending on state
 				switch (myState) {
 					case State.SEARCHING:
@@ -123,7 +123,7 @@ var Mino = (function(){
 						speedInterval = chaseSpeedInterval;
 					break;
 				}
-				
+
 				moveMinoLoop = game.time.events.loop(speedInterval, function(){
 
 					if( (xPosition == xDestination && yPosition == yDestination)) {
@@ -132,11 +132,15 @@ var Mino = (function(){
 					else {
 						eraseOldPos(xPosition, yPosition);
 						pathStep++;
-						if(globalPath == null){
+						if(globalPath[pathStep] == null){
 							console.log("Path is null");
+
 						}
-						xPosition = globalPath[pathStep].x;
-						yPosition = globalPath[pathStep].y;
+						else{
+							xPosition = globalPath[pathStep].x;
+							yPosition = globalPath[pathStep].y;
+						}
+
 						drawUnit("Mino", xPosition, yPosition);
 					}
 				});
@@ -147,14 +151,14 @@ var Mino = (function(){
 				line = new Phaser.Line(xPosition, yPosition,
 						player.getX(), player.getY());
 			},
-			
+
 			//Returns true if there is no wall along the line
 			//Wall equals a maze value of zero
 			getLineOfSight: function(){
-					
+
 					line = new Phaser.Line(xPosition, yPosition,
 						player.getX(), player.getY());
-					
+
 					var arr = [];
 					//Store all the coordinates values along the line in an array
 					line.coordinatesOnLine(0.5, arr);
@@ -164,14 +168,14 @@ var Mino = (function(){
 
 						//Check if the coordinates in the array equals a wall
 						if(maze[ arr[i][1] ][ arr[i][0] ] == 1){
-							console.log("NOT IN SIGHT");
+							//console.log("NOT IN SIGHT");
 							return false;
 						}
 					}
 
 					//If the array cleared the check no wall where found
 					// and the function returns true
-					console.log("IN SIGHT");
+					//console.log("IN SIGHT");
 					return true;
 			},
 
@@ -197,7 +201,7 @@ var Mino = (function(){
 					pathStep = 0;
 
 					updateGraphics();
-				}				
+				}
 			},
 
 			//Get random spot in labyrinth
