@@ -17,11 +17,11 @@ var Mino = (function(){
 
 		var patrolPathUpdateLoop;
 		var moveMinoLoop;
-		
+
 		var stepsPerPathSearch = 10;
 		var stepsPerPathChase = 2;
 		var stepsPerPath = stepsPerPathSearch;
-		
+
 		var searchUpdateInterval = Phaser.Timer.SECOND/4;
 		var chaseUpdateInterval = Phaser.Timer.SECOND/6;
 		var updateInterval = searchUpdateInterval;
@@ -42,9 +42,9 @@ var Mino = (function(){
 
 			//Set state
 			setState: function(state) {
-				
+
 				myState = state;
-				
+
 				switch (myState) {
 					case State.SEARCHING:
 						updateInterval = searchUpdateInterval;
@@ -63,21 +63,23 @@ var Mino = (function(){
 			//Test if mino should start chasing
 			shouldChaseTest: function() {
 
-				if( Mino.getLineOfSight() && myState == State.SEARCHING ){
-					
+				if( Mino.getLineOfSight(xPosition, yPosition,
+						player.getX(), player.getY()) && myState == State.SEARCHING ){
+
 					//myState = State.CHASING;
 					Mino.setState(State.CHASING);
-					
+
 					//restart updatePath loop with proper interval
-					game.time.events.remove(patrolPathUpdateLoop); 
+					game.time.events.remove(patrolPathUpdateLoop);
 					Mino.updateMinoPath();
 				}
-				else if( !Mino.getLineOfSight() && myState == State.CHASING &&
+				else if( !Mino.getLineOfSight(xPosition, yPosition,
+						player.getX(), player.getY()) && myState == State.CHASING &&
 						xPosition == xDestination && yPosition == yDestination) {
-					
+
 					//myState = State.SEARCHING;
 					Mino.setState(State.SEARCHING);
-					
+
 					//restart updatePath loop with proper interval
 					game.time.events.remove(patrolPathUpdateLoop);
 					Mino.updateMinoPath();
@@ -85,17 +87,17 @@ var Mino = (function(){
 			},
 
 			updateMinoPath: function(){
-				
+
 				var stepIterator = 0;
-				
+
 				//A loop defining how often the mino updates his path when SEARCHING
 				patrolPathUpdateLoop = game.time.events.loop(updateInterval, function(){
-					
+
 					stepIterator += 1;
-					
+
 					//Move Mino along path each iteration of the loop
 					Mino.moveMino();
-					
+
 					if(stepIterator >= stepsPerPath) {
 						Mino.choosePathByState();
 						stepIterator = 0;
@@ -119,10 +121,10 @@ var Mino = (function(){
 			//Move the Mino along path with an interval
 			moveMino: function() {
 				if( !(xPosition == xDestination && yPosition == yDestination)) {
-				
+
 					eraseOldPos(xPosition, yPosition);
 					pathStep++;
-					
+
 					if(globalPath[pathStep] == null){
 						console.log("Path is null");
 					}
@@ -142,11 +144,11 @@ var Mino = (function(){
 
 			//Returns true if there is no wall along the line
 			//Wall equals a maze value of zero
-			getLineOfSight: function(){
-					
-					//get line between mino and player
-					line = new Phaser.Line(xPosition, yPosition,
-						player.getX(), player.getY());
+			getLineOfSight: function(startXPos, startYPos, endXPos, endYPos){
+
+					//get line between startPos and endPos
+					line = new Phaser.Line(startXPos, startYPos,
+						endXPos, endYPos);
 
 					var arr = [];
 					//Store all the coordinates values along the line in an array
