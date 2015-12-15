@@ -57,12 +57,12 @@ function drawMaze(posX, posY){
 //Draw a path showing the calculated path to target location
 function drawPath(path){
 
-	// var i = 1;
-	// while (i<path.length-1) {
-		// mazeGraphics.beginFill(0xFF0000);
-		// mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
-		// i++;
-		// mazeGraphics.endFill();
-	// }
+	var i = 1;
+	while (i<path.length-1) {
+		mazeGraphics.beginFill(0xFF0000);
+		mazeGraphics.drawRect(path[i].x * tileSize + 3, path[i].y * tileSize + 3, tileSize - 6, tileSize - 6);
+		i++;
+		mazeGraphics.endFill();
+	}
 	globalPath = path;
 }
