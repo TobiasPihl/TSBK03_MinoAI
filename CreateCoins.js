@@ -1,5 +1,6 @@
 var Coins = (function() {
 	
+	var playerPoints = 0;
 	var numberOfCoins = 1;
 	
 	var xPosition;// = 0;
@@ -11,11 +12,20 @@ var Coins = (function() {
 		
 		getX: function() { return xPosition; }, 
 		
-		getX: function() { return xPosition; }, 
+		getY: function() { return yPosition; }, 
 		
 		createCoins: function() {
-			Coins.getRandomPoint;
+			Coins.getRandomPoint();
 			drawUnit("Coin", xPosition, yPosition);
+		},
+		
+		collectCheck: function(x,y) {
+			if(x == xPosition && y == yPosition) {
+				playerPoints += 1;
+				console.log("Collected coin. Your points: " + playerPoints);
+				eraseOldPos("Coin", xPosition, yPosition);
+				Coins.createCoins();
+			}
 		},
 		
 		getRandomPoint: function() {
