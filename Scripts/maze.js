@@ -3,9 +3,9 @@ var Maze = (function(){
 
     //maze properties
     var maze = [];
-    
+
     return {
-		
+
         //Create a maze by using the input varables of the maze's dimension
         createMaze: function(maze, mazeWidth, mazeHeight) {
 
@@ -42,6 +42,7 @@ var Maze = (function(){
             }
 
             //Create a walkable path through the maze
+            //DFS algorithm
             maze[posX][posY] = 0;
             moves.push(posY + posY * mazeWidth);
             while(moves.length){
@@ -85,7 +86,7 @@ var Maze = (function(){
     				moves.push(posY + posX * mazeWidth);
     			}
     			else{
-    				//Pop the stack with the finished maze
+    				//Pop the stack to backtrack
     				var back = moves.pop();
     				posX = Math.floor(back / mazeWidth);
     				posY = back % mazeWidth;

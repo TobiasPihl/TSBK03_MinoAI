@@ -19,7 +19,7 @@ var Mino = (function(){
 		var moveMinoLoop;
 
 		var stepsPerPathSearch = 10;
-		var stepsPerPathChase = 2;
+		var stepsPerPathChase = 1;
 		var stepsPerPath = stepsPerPathSearch;
 
 		var searchUpdateInterval = Phaser.Timer.SECOND/4;
